@@ -3,14 +3,12 @@ import { loadControllers, scopePerRequest } from 'awilix-express'
 import bodyParser from 'body-parser'
 import { IConfig } from 'config'
 import express, { Request } from 'express'
-import expressWs from 'express-ws'
 import helmet from 'helmet'
 import { Server } from 'http'
-import { WebSocket } from 'ws'
+import { WebSocket, WebSocketServer } from 'ws'
 import { cwd } from './util.js'
 
 const app = express()
-const ws = expressWs(app)
 
 function registerMiddleware() {
     app.use(helmet())
@@ -31,9 +29,8 @@ function loadRoutes() {
     app.use(loadControllers('app/route/*', { cwd: cwd(import.meta.url) }))
 }
 
-function registerWebsocket() {
-    //@ts-ignore
-    app.ws('/socket', (socket: WebSocket, _req: Request) => {
+function registerWebsocket(wss: WebSocketServer) {
+    wss.on('connection', (socket: WebSocket, _req: Request) => {
         console.log('Someone connected.')
         socket.on('close', _hadError => console.log('Socket disconnected.'))
         socket.on('message', data => {
@@ -60,11 +57,18 @@ export function startServer(container: AwilixContainer): Server {
 
     registerMiddleware()
     loadRoutes()
-    registerWebsocket()
 
     const config = container.resolve('config') as IConfig
     const host = config.get('server.host') as string
     const port = config.get('server.port') as number
 
-    return app.listen(port, host, () => console.log('Listening on port 3000'))
+    // TODO: Expose via /socket
+    const wssPort = port + 1
+    const wss = new WebSocketServer({
+        port: wssPort
+    })
+    registerWebsocket(wss)
+    console.log('WebSocket Server listening on port ' + wssPort);
+
+    return app.listen(port, host, () => console.log('Http Server listening on port ' + port))
 }
