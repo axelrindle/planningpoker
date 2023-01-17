@@ -1,11 +1,10 @@
 import { createTerminus } from '@godaddy/terminus'
 import container from './container.js'
-import server from './server.js'
+import { startServer } from './server.js'
 
-server.set('container', container)
-const _server = server.listen(3000, () => console.log('Listening on port 3000'))
+const server = startServer(container)
 
-createTerminus(_server, {
+createTerminus(server, {
     signals: ['SIGINT', 'SIGTERM'],
     onSignal: async () => {
         process.stdout.write('\n') // insert newline after escape sequence

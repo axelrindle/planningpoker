@@ -1,3 +1,5 @@
+import { IConfig } from 'config'
+import { join } from 'path'
 import { Database } from 'sqlite3'
 import { Disposable } from '../types.js'
 
@@ -5,8 +7,13 @@ export default class DatabaseService implements Disposable {
 
     private database: Database
 
-    constructor() {
-        this.database = new Database(':memory:')
+    constructor(config: IConfig) {
+        const dataDirectory = config.get('data_directory') as string
+        this.database = new Database(join(dataDirectory, 'db.sqlite'))
+
+        this.database.on('trace', sql => {
+            console.log('Executing SQL: ' + sql)
+        })
     }
 
     execute(sql: string): Promise<void> {

@@ -1,10 +1,13 @@
-import { asClass, createContainer } from 'awilix'
+import { asClass, asValue, createContainer } from 'awilix'
+import config from 'config'
 import { Disposable, Initable } from './types.js'
 import { cwd } from './util.js'
 
 const container = createContainer({
     injectionMode: 'CLASSIC'
 })
+
+container.register('config', asValue(config))
 
 container.loadModules(
     [

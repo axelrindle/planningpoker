@@ -7,7 +7,8 @@
   "license": "GPL-3.0",
   "main": "dist/index.js",
   "scripts": {
-    "start": "tsx src/index.ts",
+    "start": "NODE_ENV=development tsx src/index.ts",
+    "watch": "NODE_ENV=development nodemon",
     "build": "tsc",
     "test": "node ./__tests__/backend.test.js"
   },
@@ -21,14 +22,21 @@
     "@types/express-ws": "^3.0.1",
     "@types/glob": "^8.0.0",
     "@types/node": "^18.11.18",
+    "@types/ws": "^8.5.4",
+    "@typescript-eslint/eslint-plugin": "^5.48.2",
+    "@typescript-eslint/parser": "^5.48.2",
+    "eslint": "^8.32.0",
+    "nodemon": "^2.0.20",
     "tsx": "^3.12.2",
     "typescript": "^4.9.4"
   },
   "dependencies": {
     "@godaddy/terminus": "^4.11.2",
+    "@types/body-parser": "^1.19.2",
     "@version-checker/core": "^3.0.0",
     "awilix": "^8.0.0",
     "awilix-express": "^8.0.0",
+    "body-parser": "^1.20.1",
     "chalk": "^5.2.0",
     "config": "^3.3.8",
     "express": "^4.18.2",
@@ -36,6 +44,7 @@
     "glob": "^8.1.0",
     "helmet": "^6.0.1",
     "sqlite3": "^5.1.4",
-    "winston": "^3.8.2"
+    "winston": "^3.8.2",
+    "ws": "^8.12.0"
   }
 }

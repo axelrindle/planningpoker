@@ -1,25 +1,70 @@
 import { AwilixContainer } from 'awilix'
 import { loadControllers, scopePerRequest } from 'awilix-express'
 import bodyParser from 'body-parser'
-import express from 'express'
+import { IConfig } from 'config'
+import express, { Request } from 'express'
+import expressWs from 'express-ws'
 import helmet from 'helmet'
+import { Server } from 'http'
+import { WebSocket } from 'ws'
 import { cwd } from './util.js'
 
 const app = express()
+const ws = expressWs(app)
 
-app.use(helmet())
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+function registerMiddleware() {
+    app.use(helmet())
+    app.use(bodyParser.json())
+    app.use(bodyParser.urlencoded({ extended: true }))
+}
 
-app.use((req, res, next) => {
-    const container = req.app.get('container') as AwilixContainer
-    if (container) {
-        scopePerRequest(container)(req, res, next)
-    }
-    else {
-        next()
-    }
-})
-app.use(loadControllers('app/route/*', { cwd: cwd(import.meta.url) }))
+function loadRoutes() {
+    app.use((req, res, next) => {
+        const container = req.app.get('container') as AwilixContainer
+        if (container) {
+            scopePerRequest(container)(req, res, next)
+        }
+        else {
+            next()
+        }
+    })
+    app.use(loadControllers('app/route/*', { cwd: cwd(import.meta.url) }))
+}
 
-export default app
+function registerWebsocket() {
+    //@ts-ignore
+    app.ws('/socket', (socket: WebSocket, _req: Request) => {
+        console.log('Someone connected.')
+        socket.on('close', _hadError => console.log('Socket disconnected.'))
+        socket.on('message', data => {
+            try {
+                const _data = data.toString()
+                const theData = JSON.parse(_data)
+                console.log('Someone said: ' + _data)
+                socket.send(JSON.stringify({
+                    requestId: theData.requestId,
+                    message: 'OK'
+                }))
+            } catch (error: any) {
+                console.log(error)
+                socket.send(JSON.stringify({
+                    error: error.message
+                }))
+            }
+        })
+    })
+}
+
+export function startServer(container: AwilixContainer): Server {
+    app.set('container', container)
+
+    registerMiddleware()
+    loadRoutes()
+    registerWebsocket()
+
+    const config = container.resolve('config') as IConfig
+    const host = config.get('server.host') as string
+    const port = config.get('server.port') as number
+
+    return app.listen(port, host, () => console.log('Listening on port 3000'))
+}

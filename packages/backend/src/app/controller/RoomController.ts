@@ -14,14 +14,25 @@ export default class RoomController {
         res.json(rooms)
     }
 
-    create(req: Request, res: Response): any {
-        const { name } = req.body
+    async create(req: Request, res: Response) {
+        const { name, description, limit } = req.body
         if (!name) {
             return res.status(400).json({
                 error: 'No name given!'
             })
         }
 
-        res.json({ name })
+        // TODO: Validation
+        const room = { name, description, limit }
+
+        try {
+            await this.database.execute(`insert into room values (null, '${name}', '${description}', ${limit})`)
+            res.json(room)
+        } catch (error: any) {
+            console.log(error)
+            res.status(500).json({
+                error: error.message
+            })
+        }
     }
 }
