@@ -1,4 +1,4 @@
-import { asClass, asValue, createContainer } from 'awilix'
+import { asClass, asValue, AwilixContainer, createContainer } from 'awilix'
 import config from 'config'
 import { makeLogger } from './logger.js'
 import { Disposable, Initable } from './types.js'
@@ -31,12 +31,14 @@ container.loadModules(
     }
 )
 
-logger.info(`Loaded ${Object.keys(container.cradle).length} services.`)
+export default async function startContainer(): Promise<AwilixContainer> {
+    logger.info(`Loaded ${Object.keys(container.cradle).length} services.`)
 
-const servicesNeedInit = ['storage']
-for await (const service of servicesNeedInit) {
-    logger.debug('Initializing service ' + service + ' ...')
-    await container.resolve<Initable>(service).init()
+    const servicesNeedInit = ['storage']
+    for await (const service of servicesNeedInit) {
+        logger.debug('Initializing service ' + service + ' ...')
+        await container.resolve<Initable>(service).init()
+    }
+
+    return container
 }
-
-export default container
