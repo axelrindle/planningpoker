@@ -1,18 +1,20 @@
-import { IConfig } from 'config'
-import { join } from 'path'
 import { Database } from 'sqlite3'
+import { Logger } from 'winston'
+import { makeLogger } from '../logger.js'
 import { Disposable } from '../types.js'
+import StorageService from './storage.js'
 
 export default class DatabaseService implements Disposable {
 
+    private logger: Logger
     private database: Database
 
-    constructor(config: IConfig) {
-        const dataDirectory = config.get('data_directory') as string
-        this.database = new Database(join(dataDirectory, 'db.sqlite'))
+    constructor(storage: StorageService) {
+        this.logger = makeLogger('database')
+        this.database = new Database(storage.resolve('db.sqlite'))
 
         this.database.on('trace', sql => {
-            console.log('Executing SQL: ' + sql)
+            this.logger.debug('Executing SQL: ' + sql)
         })
     }
 

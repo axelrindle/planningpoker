@@ -1,8 +1,10 @@
 import { asClass, asValue, createContainer } from 'awilix'
 import config from 'config'
+import { makeLogger } from './logger.js'
 import { Disposable, Initable } from './types.js'
 import { cwd } from './util.js'
 
+const logger = makeLogger('container')
 const container = createContainer({
     injectionMode: 'CLASSIC'
 })
@@ -29,10 +31,12 @@ container.loadModules(
     }
 )
 
-for await (const service of Object.values<Initable>(container.cradle)) {
-    if (typeof service.init === 'function') {
-        await service.init()
-    }
+logger.info(`Loaded ${Object.keys(container.cradle).length} services.`)
+
+const servicesNeedInit = ['storage']
+for await (const service of servicesNeedInit) {
+    logger.debug('Initializing service ' + service + ' ...')
+    await container.resolve<Initable>(service).init()
 }
 
 export default container
