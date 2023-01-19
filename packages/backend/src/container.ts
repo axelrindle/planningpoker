@@ -1,7 +1,7 @@
 import { asClass, asValue, AwilixContainer, createContainer } from 'awilix'
 import config from 'config'
 import { makeLogger } from './logger.js'
-import { Disposable, Initable } from './types.js'
+import { Service } from './types.js'
 import { cwd } from './util.js'
 
 const logger = makeLogger('container')
@@ -22,11 +22,7 @@ container.loadModules(
         resolverOptions: {
             lifetime: 'SINGLETON',
             register: asClass,
-            dispose: async (value: Disposable) => {
-                if (typeof value.dispose === 'function') {
-                    await value.dispose()
-                }
-            }
+            dispose: async (value: Service) => await value.dispose()
         }
     }
 )
@@ -34,11 +30,17 @@ container.loadModules(
 export default async function startContainer(): Promise<AwilixContainer> {
     logger.info(`Loaded ${Object.keys(container.cradle).length} services.`)
 
-    const servicesNeedInit = ['storage']
-    for await (const service of servicesNeedInit) {
-        logger.debug('Initializing service ' + service + ' ...')
-        await container.resolve<Initable>(service).init()
+    let initCount = 0
+    const services = Object.entries<Service>(container.cradle)
+        .filter(([_k, v]) => typeof v.init === 'function')
+        .sort(([_k1, a], [_k2, b]) => (a.priority > b.priority) ? 1 : ((b.priority > a.priority) ? -1 : 0))
+    for await (const [key] of services) {
+        logger.debug(`Initializing service "${key}"`)
+        await container.resolve(key).init()
+        initCount++
     }
+
+    logger.info(`Initialized ${initCount} services.`)
 
     return container
 }

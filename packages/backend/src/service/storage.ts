@@ -2,14 +2,17 @@ import { IConfig } from 'config'
 import { stat } from 'fs/promises'
 import mkdirp from 'mkdirp'
 import { isAbsolute, join, resolve } from 'path'
-import { Initable } from '../types.js'
+import { Service } from '../types.js'
 
-export default class StorageService implements Initable {
+export default class StorageService extends Service {
 
+    readonly priority = 1
     private readonly configKey = 'data_directory'
     private directory: string
 
     constructor(config: IConfig) {
+        super()
+
         const dataDirectory = this.getConfigValue(config)
         if (!dataDirectory) {
             this.directory = join(process.cwd(), 'data')
@@ -22,7 +25,7 @@ export default class StorageService implements Initable {
         }
     }
 
-    async init() {
+    override async init(): Promise<void> {
         await this.ensureDirectory()
     }
 

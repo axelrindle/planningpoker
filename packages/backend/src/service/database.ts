@@ -1,15 +1,19 @@
+import { format } from 'sql-formatter'
 import { Database } from 'sqlite3'
 import { Logger } from 'winston'
 import { makeLogger } from '../logger.js'
-import { Disposable } from '../types.js'
+import { Service } from '../types.js'
 import StorageService from './storage.js'
 
-export default class DatabaseService implements Disposable {
+export default class DatabaseService extends Service {
 
+    readonly priority = 2
     private logger: Logger
     private database: Database
 
     constructor(storage: StorageService) {
+        super()
+
         this.logger = makeLogger('database')
         this.database = new Database(storage.resolve('db.sqlite'))
 
@@ -45,7 +49,7 @@ export default class DatabaseService implements Disposable {
         })
     }
 
-    dispose(): Promise<void> {
+    override dispose(): Promise<void> {
         return new Promise((resolve, reject) => {
             this.database.close(err => {
                 if (err) reject(err)
