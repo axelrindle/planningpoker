@@ -18,7 +18,10 @@ export default class DatabaseService extends Service {
         this.database = new Database(storage.resolve('db.sqlite'))
 
         this.database.on('trace', sql => {
-            this.logger.debug('Executing SQL: ' + sql)
+            this.logger.debug('Executing SQL: \n' + format(sql, {
+                language: 'sqlite',
+                indentStyle: 'tabularLeft'
+            }))
         })
     }
 
