@@ -2,6 +2,8 @@ import { IConfig } from 'config'
 import { stat } from 'fs/promises'
 import mkdirp from 'mkdirp'
 import { isAbsolute, join, resolve } from 'path'
+import { Logger } from 'winston'
+import { makeLogger } from '../logger.js'
 import { Service } from '../types.js'
 
 export default class StorageService extends Service {
@@ -10,8 +12,12 @@ export default class StorageService extends Service {
     private readonly configKey = 'data_directory'
     private directory: string
 
+    private logger: Logger
+
     constructor(config: IConfig) {
         super()
+
+        this.logger = makeLogger('storage')
 
         const dataDirectory = this.getConfigValue(config)
         if (!dataDirectory) {
@@ -23,6 +29,8 @@ export default class StorageService extends Service {
         else {
             this.directory = resolve(dataDirectory)
         }
+
+        this.logger.debug('Data is at ' + this.directory)
     }
 
     override async init(): Promise<void> {
