@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  NODE_VERSION: 18
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    - name: Get npm cache directory
+      id: npm-cache-dir
+      shell: bash
+      run: echo "dir=$(npm config get cache)" >> ${GITHUB_OUTPUT}
+    - name: Cache
+      uses: actions/cache@v3
+      with:
+        key: ${{ runner.os }}-${{ hashFiles('./package-lock.json') }}
+        path: |
+          ${{ steps.npm-cache-dir.outputs.dir }}
+          **/node_modules
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - run: npm ci
+    - run: npm run build
