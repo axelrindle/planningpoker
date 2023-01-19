@@ -9,6 +9,9 @@ module.exports = {
                 primary: '#134094',
                 secondary: '#3da3dc',
                 accent: '#dc763d'
+            },
+            gridTemplateColumns: {
+                header: 'minmax(0, 1fr) auto'
             }
         },
     },
