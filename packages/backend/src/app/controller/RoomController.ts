@@ -13,9 +13,8 @@ export default class RoomController {
     }
 
     async list(_req: Request, res: Response) {
-        const rooms = await this.database.queryAll('select `id`, `name`, `description`, `limit` from room')
+        const rooms = await this.database.queryAll('select * from room')
         for (const room of rooms) {
-            room.state = this.game.getState(room)
             room.users = this.game.getUsers(room)
         }
         res.json(rooms)
