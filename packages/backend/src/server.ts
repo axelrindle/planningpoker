@@ -2,7 +2,8 @@ import { AwilixContainer } from 'awilix'
 import { loadControllers, scopePerRequest } from 'awilix-express'
 import bodyParser from 'body-parser'
 import config, { IConfig } from 'config'
-import express, { ErrorRequestHandler, Request } from 'express'
+import cors from 'cors'
+import express, { ErrorRequestHandler } from 'express'
 import helmet from 'helmet'
 import { Server } from 'http'
 import { WebSocket, WebSocketServer } from 'ws'
@@ -21,6 +22,7 @@ const handleError: ErrorRequestHandler = (err, _req, res, _next) => {
 
 function registerMiddleware() {
     app.use(helmet())
+    app.use(cors())
     app.use(bodyParser.json())
     app.use(bodyParser.urlencoded({ extended: true }))
 
