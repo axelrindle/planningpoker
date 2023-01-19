@@ -12,7 +12,7 @@ export default class RoomController {
         this.game = game
     }
 
-    async list(req: Request, res: Response) {
+    async list(_req: Request, res: Response) {
         const rooms = await this.database.queryAll('select `id`, `name`, `description`, `limit` from room')
         for (const room of rooms) {
             room.state = this.game.getState(room)
@@ -24,9 +24,10 @@ export default class RoomController {
     async create(req: Request, res: Response) {
         const { name, description, limit } = req.body
         if (!name) {
-            return res.status(400).json({
+            res.status(400).json({
                 error: 'No name given!'
             })
+            return
         }
 
         // TODO: Validation

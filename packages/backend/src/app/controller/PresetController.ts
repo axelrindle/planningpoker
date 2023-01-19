@@ -9,7 +9,7 @@ export default class PresetController {
         this.database = database
     }
 
-    async list(req: Request, res: Response) {
+    async list(_req: Request, res: Response) {
         const presets = await this.database.queryAll('select * from preset')
         for (const preset of presets) {
             const sql = `
