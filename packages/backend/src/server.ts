@@ -6,8 +6,9 @@ import cors from 'cors'
 import express, { ErrorRequestHandler } from 'express'
 import helmet from 'helmet'
 import { Server } from 'http'
-import { WebSocket, WebSocketServer } from 'ws'
+import { WebSocketServer } from 'ws'
 import requestLogger from './app/middleware/morgan.js'
+import socketHandler from './app/websocket.js'
 import { makeLogger } from './logger.js'
 import { cwd } from './util.js'
 
@@ -47,28 +48,6 @@ function loadRoutes() {
     app.use(loadControllers('app/route/*', { cwd: cwd(import.meta.url) }))
 }
 
-function registerWebsocket(wss: WebSocketServer) {
-    wss.on('connection', (socket: WebSocket, _req: Request) => {
-        logger.info('Someone connected.')
-        socket.on('close', _hadError => logger.info('Socket disconnected.'))
-        socket.on('message', data => {
-            try {
-                const theData = JSON.parse(data.toString())
-                logger.info(theData?.data?.message)
-                socket.send(JSON.stringify({
-                    requestId: theData.requestId,
-                    message: 'OK'
-                }))
-            } catch (error: any) {
-                logger.info(error)
-                socket.send(JSON.stringify({
-                    error: error.message
-                }))
-            }
-        })
-    })
-}
-
 export function startServer(container: AwilixContainer): Server {
     app.set('container', container)
 
@@ -84,7 +63,12 @@ export function startServer(container: AwilixContainer): Server {
     const wss = new WebSocketServer({
         port: wssPort
     })
-    registerWebsocket(wss)
+    wss.on('connection', socketHandler(container, wss))
+    app.get('/api/socket', (req, res) => {
+        res.json({
+            url: req.hostname + ':' + wssPort
+        })
+    })
     logger.info('WebSocket Server listening on port ' + wssPort);
 
     return app.listen(port, host, () => logger.info('Http Server listening on port ' + port))

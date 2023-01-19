@@ -1,16 +1,23 @@
 import { Request, Response } from 'express'
 import DatabaseService from '../../service/database.js'
+import GameService from '../../service/game.js'
 
 export default class RoomController {
 
     private database: DatabaseService
+    private game: GameService
 
-    constructor(database: DatabaseService) {
+    constructor(database: DatabaseService, game: GameService) {
         this.database = database
+        this.game = game
     }
 
     async list(req: Request, res: Response) {
-        const rooms = await this.database.queryAll('select * from room')
+        const rooms = await this.database.queryAll('select `id`, `name`, `description`, `limit` from room')
+        for (const room of rooms) {
+            room.state = this.game.getState(room)
+            room.users = this.game.getUsers(room)
+        }
         res.json(rooms)
     }
 
