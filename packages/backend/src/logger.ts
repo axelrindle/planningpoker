@@ -35,7 +35,7 @@ const baseFormat = () => {
             base += '\n' + info['stack']
         }
         if (info['additional']) {
-            base += '\nAdditional context: ' + JSON.stringify(info['additional'])
+            base += '\nAdditional context: ' + JSON.stringify(info['additional'], null, 4)
         }
         return base
     })
