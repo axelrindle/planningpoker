@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import LayoutMain from './layouts/LayoutMain'
 import PageRoom from './pages/Room'
 import PageRooms from './pages/Rooms'
+import PageUpload from './pages/Upload'
 
 const router = createBrowserRouter([
     {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
             {
                 path: '/room/:roomId',
                 element: <PageRoom />
+            },
+            {
+                path: '/upload',
+                element: <PageUpload />
             }
         ]
     }

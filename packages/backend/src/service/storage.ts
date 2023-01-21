@@ -41,6 +41,24 @@ export default class StorageService extends Service {
         return join(this.directory, path)
     }
 
+    async exists(path: string): Promise<boolean> {
+        const abs = this.resolve(path)
+        try {
+            const stats = await stat(abs)
+            console.log(stats)
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    async mkdir(path: string) {
+        const abs = this.resolve(path)
+        if (! await this.isDirectory(abs)) {
+            await mkdirp(abs)
+        }
+    }
+
     private getConfigValue(config: IConfig): string | undefined {
         if (config.has(this.configKey)) {
             return config.get(this.configKey) as string

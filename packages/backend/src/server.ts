@@ -8,6 +8,7 @@ import helmet from 'helmet'
 import { Server } from 'http'
 import { WebSocketServer } from 'ws'
 import requestLogger from './app/middleware/morgan.js'
+import makeUploader from './app/upload.js'
 import socketHandler from './app/websocket.js'
 import { makeLogger } from './logger.js'
 import { cwd } from './util.js'
@@ -53,6 +54,8 @@ export function startServer(container: AwilixContainer): Server {
 
     registerMiddleware()
     loadRoutes()
+
+    app.use('/upload', makeUploader(container))
 
     const config = container.resolve('config') as IConfig
     const host = config.get('server.host') as string
