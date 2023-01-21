@@ -2,7 +2,7 @@ import { AwilixContainer } from 'awilix'
 import { randomUUID } from 'crypto'
 import { IncomingMessage } from 'http'
 import { parse } from 'url'
-import { WebSocket, WebSocketServer } from 'ws'
+import { WebSocket } from 'ws'
 import { makeLogger } from '../logger.js'
 import DatabaseService from '../service/database.js'
 import GameService from '../service/game.js'
@@ -33,7 +33,7 @@ function sendMessage(socket: WebSocket, message: Message) {
     socket.send(JSON.stringify(message))
 }
 
-export default function socketHandler(container: AwilixContainer, server: WebSocketServer) {
+export default function socketHandler(container: AwilixContainer) {
     const database = container.resolve<DatabaseService>('database')
     const gameManager = container.resolve<GameService>('game')
 

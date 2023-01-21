@@ -66,7 +66,7 @@ export function startServer(container: AwilixContainer): Server {
     const wss = new WebSocketServer({
         port: wssPort
     })
-    wss.on('connection', socketHandler(container, wss))
+    wss.on('connection', socketHandler(container))
     app.get('/api/socket', (req, res) => {
         res.json({
             url: req.hostname + ':' + wssPort
