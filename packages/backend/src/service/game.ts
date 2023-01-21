@@ -84,6 +84,18 @@ export default class GameService extends Service {
         })
     }
 
+    findUser(userId: string): User | undefined {
+        for (const game of this.games) {
+            for (const user of game.users) {
+                if (user.id === userId) {
+                    return user
+                }
+            }
+        }
+
+        return undefined
+    }
+
     join(room: Room, user: string) {
         const game = this.findGameByRoom(room)
         if (!game) {
