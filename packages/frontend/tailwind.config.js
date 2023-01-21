@@ -4,6 +4,9 @@ module.exports = {
         "./src/**/*.{js,jsx,ts,tsx}",
     ],
     theme: {
+        fontFamily: {
+            sans: ['Inter', 'sans-serif']
+        },
         extend: {
             colors: {
                 primary: '#134094',
