@@ -19,3 +19,11 @@ export interface Room {
     id: number
     name: string
 }
+
+export type Event = 'HELLO' | 'UPDATE' | 'SELECT' | 'DEBUG'
+
+export interface Message {
+    userId?: string
+    event: Event
+    data: any
+}

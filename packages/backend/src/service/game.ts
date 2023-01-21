@@ -1,9 +1,11 @@
-import { Room, Service } from '../types.js'
+import { WebSocket } from 'ws'
+import { Message, Room, Service } from '../types.js'
 import DatabaseService from './database.js'
 
 type GameState = 'CHOOSE' | 'SHOW'
 
 interface User {
+    socket: WebSocket
     id: string
     name: string
     card?: number
@@ -85,7 +87,7 @@ export default class GameService extends Service {
     }
 
     findUser(userId: string): User | undefined {
-        for (const game of this.games) {
+        for (const game of Object.values(this.games)) {
             for (const user of game.users) {
                 if (user.id === userId) {
                     return user
@@ -96,7 +98,7 @@ export default class GameService extends Service {
         return undefined
     }
 
-    join(room: Room, user: string) {
+    join(room: Room, user: string, socket: WebSocket) {
         const game = this.findGameByRoom(room)
         if (!game) {
             throw new Error('No game found?!')
@@ -105,6 +107,7 @@ export default class GameService extends Service {
         game.users.push({
             id: user,
             name: 'Player ' + (game.users.length + 1),
+            socket,
         })
     }
 
@@ -116,6 +119,18 @@ export default class GameService extends Service {
 
         const index = game.users.findIndex(el => el.id === user)
         game.users.splice(index, 1)
+    }
+
+    broadcast(room: Room, message: Message) {
+        const game = this.findGameByRoom(room)
+        if (!game) {
+            throw new Error('No game found?!')
+        }
+
+        const sockets = game.users.map(user => user.socket)
+        for (const client of sockets) {
+            client.send(JSON.stringify(message))
+        }
     }
 
 }

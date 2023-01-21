@@ -6,14 +6,7 @@ import { WebSocket, WebSocketServer } from 'ws'
 import { makeLogger } from '../logger.js'
 import DatabaseService from '../service/database.js'
 import GameService from '../service/game.js'
-
-type Event = 'HELLO' | 'UPDATE' | 'SELECT' | 'DEBUG'
-
-interface Message {
-    userId?: string
-    event: Event
-    data: any
-}
+import { Message } from '../types.js'
 
 const logger = makeLogger('websocket')
 const users: string[] = []
@@ -64,20 +57,18 @@ export default function socketHandler(container: AwilixContainer, server: WebSoc
         }
 
         function sendUpdate() {
-            for (const client of server.clients) {
-                sendMessage(client, {
-                    event: 'UPDATE',
-                    data: {
-                        state: gameManager.getState(room),
-                        users: gameManager.getUiState(room)
-                    },
-                })
-            }
+            gameManager.broadcast(room, {
+                event: 'UPDATE',
+                data: {
+                    state: gameManager.getState(room),
+                    users: gameManager.getUiState(room)
+                },
+            })
         }
 
         // assign user id
         const uuid = findUuid()
-        gameManager.join(room, uuid)
+        gameManager.join(room, uuid, socket)
         sendMessage(socket, {
             event: 'HELLO',
             data: {
