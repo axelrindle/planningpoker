@@ -10,7 +10,6 @@ interface User {
 }
 
 interface Game {
-    roomId: number
     users: User[]
 }
 
@@ -26,7 +25,7 @@ export default class GameService extends Service {
 
     readonly priority = 10
     private database: DatabaseService
-    private games: Game[] = []
+    private games: Record<number, Game> = {}
 
     constructor(database: DatabaseService) {
         super()
@@ -41,15 +40,14 @@ export default class GameService extends Service {
     async updateGames() {
         const rooms: Room[] = await this.database.queryAll('select id, name from room')
         for (const room of rooms) {
-            this.games.push({
-                roomId: room.id,
+            this.games[room.id] = {
                 users: []
-            })
+            }
         }
     }
 
     findGameByRoom(room: Room): Game | undefined {
-        return this.games.find(game => game.roomId === room.id)
+        return this.games[room.id]
     }
 
     getState(room: Room) {
