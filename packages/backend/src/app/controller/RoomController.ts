@@ -35,6 +35,7 @@ export default class RoomController {
         try {
             const sql = `insert into room values (null, '${name}', '${description ?? null}', ${limit ?? null})`
             await this.database.execute(sql)
+            await this.game.updateGames()
             res.json(room)
         } catch (error: any) {
             console.log(error)
