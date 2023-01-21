@@ -1,18 +1,20 @@
 import { faRefresh } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useSelector } from '../store'
 
 export default function PageRooms() {
     const [rooms, setRooms] = useState<any[]>([])
+    const apiUrl = useSelector(state => state.config.apiUrl)
 
-    function loadRooms() {
-        fetch('http://127.0.0.1:3000/api/room')
+    const loadRooms = useCallback(() => {
+        fetch(`${apiUrl}/api/room`)
             .then(response => response.json())
             .then(data => setRooms(data))
-    }
+    }, [apiUrl])
 
-    useEffect(() => loadRooms(), [])
+    useEffect(() => loadRooms(), [loadRooms])
 
     return (
         <>

@@ -1,10 +1,12 @@
 import { ChangeEvent, useCallback, useState } from 'react'
 import { useTus } from 'use-tus'
+import { useSelector } from '../store'
 
 export default function PageUpload() {
     const { upload, setUpload, isSuccess, error, remove } = useTus()
     const [hasFile, setHasFile] = useState(false)
     const [progress, setProgress] = useState(0)
+    const apiUrl = useSelector(state => state.config.apiUrl)
 
     const handleSetUpload = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files
@@ -21,7 +23,7 @@ export default function PageUpload() {
         setHasFile(true)
 
         setUpload(file, {
-            endpoint: 'http://localhost:3000/upload',
+            endpoint: `${apiUrl}/upload`,
             metadata: {
                 filename: file.name,
                 filetype: file.type,
@@ -30,7 +32,7 @@ export default function PageUpload() {
                 setProgress((bytesSent / bytesTotal) * 100)
             },
         })
-    }, [setUpload])
+    }, [setUpload, apiUrl])
 
     const handleStart = useCallback(() => {
         if (!upload) {

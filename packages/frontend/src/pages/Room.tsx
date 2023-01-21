@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ReadyState } from 'react-use-websocket'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket.js'
+import { useSelector } from '../store'
 
 export default function PageRoom() {
     const { roomId } = useParams()
+    const socketUrl = useSelector(state => state.config.socketUrl)
 
     const [messageHistory, setMessageHistory] = useState<MessageEvent[]>([])
-    const { sendMessage, lastMessage, readyState } = useWebSocket('ws://10.231.55.48:3001?room=' + roomId)
+    const { sendMessage, lastMessage, readyState } = useWebSocket(`${socketUrl}?room=${roomId}`)
     const connectionStatus = {
         [ReadyState.CONNECTING]: 'Connecting',
         [ReadyState.OPEN]: 'Open',
