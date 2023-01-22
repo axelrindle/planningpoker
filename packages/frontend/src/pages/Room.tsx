@@ -1,9 +1,10 @@
-import { faCheck, faClose } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faChessRook, faClose } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ReadyState } from 'react-use-websocket'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket.js'
+import Button from '../components/Button'
 import { useSelector } from '../store'
 
 export default function PageRoom() {
@@ -23,12 +24,14 @@ export default function PageRoom() {
     const [userId, setUserId] = useState<string>('')
     const [users, setUsers] = useState<any[]>([])
 
+    const [card, setCard] = useState('')
+
     function select() {
         sendMessage(JSON.stringify({
             userId,
             event: 'SELECT',
             data: {
-                cardId: 1
+                cardId: card
             }
         }))
     }
@@ -53,6 +56,22 @@ export default function PageRoom() {
 
     return (
         <>
+            <div className="flex flex-col gap-1 mb-4">
+                <label className="text-sm font-medium" htmlFor="card">
+                    Card
+                </label>
+                <input
+                    type="number"
+                    name="card"
+                    min={0}
+                    className="
+                        w-36 p-4
+                        text-sm shadow-sm
+                        border-2 border-violet-200 rounded
+                    "
+                    onChange={e => setCard(e.target.value)}
+                />
+            </div>
             <div className="flex flex-row items-start gap-4 mb-8">
                 <Link
                     to="/"
@@ -60,12 +79,11 @@ export default function PageRoom() {
                 >
                     Leave
                 </Link>
-                <p
-                    className="bg-primary text-white px-8 py-4 rounded cursor-pointer"
+                <Button
+                    label="Select"
+                    icon={faChessRook}
                     onClick={() => select()}
-                >
-                    Select
-                </p>
+                />
             </div>
 
             <div className="mb-8">
