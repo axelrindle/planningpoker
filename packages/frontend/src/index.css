@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,4 +8,12 @@ html, body, #root {
     height: 100%;
     width: 100%;
     overflow: hidden;
+}
+
+body {
+    background-image: url("./assets/background/memphis-colorful.png");
+
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
