@@ -17,3 +17,6 @@ body {
     -ms-user-select: none;
     user-select: none;
 }
+html.dark body {
+    background-image: url("./assets/background/memphis-colorful-dark.png");
+}
