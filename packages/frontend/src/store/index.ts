@@ -5,10 +5,12 @@ import {
     useSelector as _useSelector
 } from 'react-redux'
 import config from './slices/config'
+import formData from './slices/formData'
 
 const store = configureStore({
     reducer: {
-        config
+        config,
+        formData
     },
 })
 
