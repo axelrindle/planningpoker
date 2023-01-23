@@ -27,8 +27,8 @@
     "tailwindcss": "^3.2.4"
   },
   "scripts": {
-    "start": "BROWSER=none react-scripts start",
-    "open": "react-scripts start",
+    "start": "PORT=3002 BROWSER=none react-scripts start",
+    "open": "PORT=3002 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
