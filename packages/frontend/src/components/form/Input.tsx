@@ -10,6 +10,7 @@ interface Props {
     help?: string
     formData?: string
     contentAfter?: ReactNode
+    containerClassName?: string
 }
 
 function useInitialValue(root: string, key: string) {
@@ -36,7 +37,7 @@ export default function Input(props: Props) {
     }, [dispatch, formDataKey, props.name])
 
     return (
-        <div className="flex flex-col gap-1">
+        <div className={`flex flex-col gap-1 ${props.containerClassName ?? ''}`}>
             <label className="text-sm font-medium" htmlFor={props.name}>
                 {props.label}
             </label>

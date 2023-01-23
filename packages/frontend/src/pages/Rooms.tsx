@@ -1,12 +1,15 @@
-import { faRefresh } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus, faRefresh } from '@fortawesome/free-solid-svg-icons'
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import Button from '../components/Button'
+import ModalCreateRoom from '../modals/CreateRoom'
 import { useSelector } from '../store'
 
 export default function PageRooms() {
     const [rooms, setRooms] = useState<any[]>([])
     const apiUrl = useSelector(state => state.config.apiUrl)
+
+    const [isOpen, setOpen] = useState(false)
 
     const loadRooms = useCallback(() => {
         fetch(`${apiUrl}/api/room`)
@@ -25,14 +28,18 @@ export default function PageRooms() {
                     </p>
                     <p>Select a Room to join down below.</p>
                 </div>
-                <div>
-                    <p
-                        className="bg-primary text-white px-8 py-4 rounded cursor-pointer"
+                <div className="flex flex-row gap-4">
+                    <Button
+                        label="Refresh"
+                        icon={faRefresh}
                         onClick={() => loadRooms()}
-                    >
-                        <FontAwesomeIcon icon={faRefresh} />
-                        <span className="ml-2">Refresh</span>
-                    </p>
+                        hideLabel
+                    />
+                    <Button
+                        label="Add"
+                        icon={faPlus}
+                        onClick={() => setOpen(true)}
+                    />
                 </div>
             </div>
             <div className="grid grid-cols-4 gap-8">
@@ -62,6 +69,11 @@ export default function PageRooms() {
                     </Link>
                 ))}
             </div>
+
+            <ModalCreateRoom
+                isOpen={isOpen}
+                close={() => setOpen(false)}
+            />
         </>
     )
 }
