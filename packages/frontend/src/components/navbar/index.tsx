@@ -1,5 +1,6 @@
 import { faHome, faUpload } from '@fortawesome/free-solid-svg-icons';
 import icon from '../../assets/icon.svg';
+import NightModeSwitch from '../NightModeSwitch';
 import NavItem from './NavItem';
 
 export default function Navbar() {
@@ -22,10 +23,11 @@ export default function Navbar() {
                     <img src={icon} alt="poker card" className="h-8" />
                     <span className="font-bold text-2xl">Planning Poker</span>
                 </div>
-                <div className="flex justify-end">
+                <div className="flex flex-row justify-end items-center gap-4">
                     <p>
                         You're not signed in.
                     </p>
+                    <NightModeSwitch />
                 </div>
             </div>
         </div>
