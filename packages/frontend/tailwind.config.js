@@ -11,7 +11,8 @@ module.exports = {
             colors: {
                 primary: '#134094',
                 secondary: '#3da3dc',
-                accent: '#dc763d'
+                accent: '#dc763d',
+                overlay: 'rgba(0, 0, 0, .7)'
             },
             gridTemplateColumns: {
                 header: 'minmax(0, 1fr) auto'
