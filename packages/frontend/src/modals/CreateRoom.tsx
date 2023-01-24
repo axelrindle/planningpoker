@@ -3,7 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useCallback, useState } from 'react';
 import Input from '../components/form/Input';
 import Modal, { ChildProps } from '../components/Modal';
-import { useSelector } from '../store';
+import { useDispatch, useSelector } from '../store';
+import { clearFormData } from '../store/slices/formData'
 
 const FORMDATA_KEY = 'room_create'
 
@@ -23,19 +24,23 @@ async function sendRequest(api: string, data: Record<string, any>): Promise<void
 }
 
 export default function ModalCreateRoom(props: Props) {
+    const [error, setError] = useState<string|null>(null)
     const [showPassword, setShowPassword] = useState(false)
     const formData = useSelector(state => state.formData[FORMDATA_KEY])
     const apiUrl = useSelector(state => state.config.apiUrl)
+    const dispatch = useDispatch()
 
     const { close } = props
     const onSave = useCallback(async () => {
         try {
+            setError(null)
             await sendRequest(apiUrl, formData)
             close()
-        } catch (error) {
-            console.log(error)
+            dispatch(clearFormData(FORMDATA_KEY))
+        } catch (error: any) {
+            setError(error.message ?? error ?? 'Unknown error!')
         }
-    }, [apiUrl, formData, close])
+    }, [apiUrl, formData, close, dispatch])
 
     return (
         <Modal
@@ -92,6 +97,11 @@ export default function ModalCreateRoom(props: Props) {
                     containerClassName="col-span-2"
                 />
             </div>
+            {error && (
+                <p className="text-red-500">
+                    {error}
+                </p>
+            )}
         </Modal>
     )
 }
