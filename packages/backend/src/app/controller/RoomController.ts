@@ -20,6 +20,19 @@ export default class RoomController {
         res.json(rooms)
     }
 
+    async read(req: Request, res: Response) {
+        const roomId = req.params['roomId']
+        const room = await this.database.querySingle('select * from room where id = ' + roomId)
+
+        if (!room) {
+            return res.status(404).json({
+                error: `No room found with ID ${roomId}!`
+            })
+        }
+
+        res.json(room)
+    }
+
     async create(req: Request, res: Response) {
         const { name, description, limit } = req.body
         if (!name) {
