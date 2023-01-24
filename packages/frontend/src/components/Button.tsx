@@ -22,6 +22,7 @@ export default function Button(props: Props) {
                 enabled:hover:bg-primary hover:text-white
                 enabled:active:bg-violet-900 active:text-white
                 disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-300
+                dark:text-white
             "
             onClick={event => {
                 if (!props.disabled) {

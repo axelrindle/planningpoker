@@ -47,7 +47,7 @@ export default function Input(props: Props) {
                     name={props.name}
                     className="
                         w-full p-4
-                        text-sm shadow-sm
+                        text-black text-sm shadow-sm
                         border-2 border-violet-200 rounded
                     "
                     placeholder={props.placeholder}

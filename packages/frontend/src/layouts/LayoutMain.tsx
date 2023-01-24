@@ -14,7 +14,7 @@ export default function LayoutMain() {
                     flex flex-col
                 "
             >
-                <Content>
+                <Content border>
                     <Outlet />
                 </Content>
             </div>

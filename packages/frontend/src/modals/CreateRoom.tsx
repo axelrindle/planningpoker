@@ -78,11 +78,14 @@ export default function ModalCreateRoom(props: Props) {
                     help="Leave empty to create a public room."
                     formData={FORMDATA_KEY}
                     contentAfter={(
-                        <div className="flex justify-center items-center w-8">
+                        <div
+                            className="flex justify-center items-center w-8"
+                            title="Toggle password visibility"
+                        >
                             <FontAwesomeIcon
                                 icon={showPassword ? faEye : faEyeSlash}
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="text-xl text-primary cursor-pointer"
+                                className="text-xl text-primary cursor-pointer dark:text-white"
                             />
                         </div>
                     )}
