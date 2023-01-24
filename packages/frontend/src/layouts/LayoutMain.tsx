@@ -7,7 +7,13 @@ export default function LayoutMain() {
         <>
             <Navbar />
 
-            <div className="mt-12 container max-w-screen-xl mx-auto text-black mb-8 flex flex-col">
+            <div
+                className="
+                    mb-8 mt-12
+                    container max-w-screen-xl mx-auto
+                    flex flex-col
+                "
+            >
                 <Content>
                     <Outlet />
                 </Content>
