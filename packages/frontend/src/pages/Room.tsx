@@ -1,13 +1,14 @@
 import { faCheck, faChessRook, faClose } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ReadyState } from 'react-use-websocket'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket.js'
 import Button from '../components/Button'
 import { useSelector } from '../store'
 
 export default function PageRoom() {
+    const navigate = useNavigate()
     const { roomId } = useParams()
     const socketUrl = useSelector(state => state.config.socketUrl)
 
@@ -48,11 +49,15 @@ export default function PageRoom() {
                 case 'UPDATE':
                     setUsers(data.data.users)
                     break
+                case 'DELETE':
+                    alert('This room has been deleted. You\'re being sent back to the room list.')
+                    navigate('/')
+                    break
                 default:
                     break;
             }
         }
-    }, [lastMessage, setMessageHistory])
+    }, [lastMessage, setMessageHistory, navigate])
 
     return (
         <>
