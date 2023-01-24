@@ -1,6 +1,7 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useEventListener from '@use-it/event-listener'
 import { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import Button from '../components/Button'
@@ -30,6 +31,18 @@ export interface ChildProps {
 }
 
 export default function Modal(props: Props) {
+    useEventListener('keydown', (event: KeyboardEvent) => {
+        if (!props.isOpen) return
+
+        switch (event.code) {
+            case 'Escape':
+                props.close()
+                break;
+            default:
+                break;
+        }
+    })
+
     if (!props.isOpen) return (<></>)
 
     const element = (
