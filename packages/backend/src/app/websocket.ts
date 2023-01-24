@@ -80,9 +80,12 @@ export default function socketHandler(container: AwilixContainer) {
         sendUpdate()
 
         socket.on('close', _hadError => {
-            gameManager.quit(room, uuid)
-            sendUpdate()
-            logger.debug('Connection closed: ' + uuid)
+            // game is undefined in case it has been deleted
+            if (gameManager.findGameByRoom(room) !== undefined) {
+                gameManager.quit(room, uuid)
+                sendUpdate()
+                logger.debug('Connection closed: ' + uuid)
+            }
         })
 
         socket.on('message', data => {
