@@ -29,9 +29,10 @@ export default class RoomController {
         const room = await this.database.querySingle('select * from room where id = ' + roomId)
 
         if (!room) {
-            return res.status(404).json({
+            res.status(404).json({
                 error: `No room found with ID ${roomId}!`
             })
+            return
         }
 
         res.json(room)
@@ -67,22 +68,22 @@ export default class RoomController {
         const room = await this.database.querySingle('select * from room where id = ' + roomId)
 
         if (!room) {
-            return res.status(404).json({
+            res.status(404).json({
                 error: `No room found with ID ${roomId}!`
             })
+            return
         }
 
         try {
             this.game.delete(room)
             await this.database.execute('delete from room where id = ' + roomId)
+            res.end()
         } catch (error: any) {
             const message = error.message ?? error ?? 'Unknown error!'
             this.logger.error(message, error)
-            return res.status(500).json({
+            res.status(500).json({
                 error: message
             })
         }
-
-        res.end()
     }
 }
