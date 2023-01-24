@@ -1,13 +1,17 @@
 import { Request, Response } from 'express'
+import { Logger } from 'winston'
+import { makeLogger } from '../../logger.js'
 import DatabaseService from '../../service/database.js'
 import GameService from '../../service/game.js'
 
 export default class RoomController {
 
+    private logger: Logger
     private database: DatabaseService
     private game: GameService
 
     constructor(database: DatabaseService, game: GameService) {
+        this.logger = makeLogger('RoomController')
         this.database = database
         this.game = game
     }
@@ -56,5 +60,29 @@ export default class RoomController {
                 error: error.message
             })
         }
+    }
+
+    async delete(req: Request, res: Response) {
+        const roomId = req.params['roomId']
+        const room = await this.database.querySingle('select * from room where id = ' + roomId)
+
+        if (!room) {
+            return res.status(404).json({
+                error: `No room found with ID ${roomId}!`
+            })
+        }
+
+        try {
+            this.game.delete(room)
+            await this.database.execute('delete from room where id = ' + roomId)
+        } catch (error: any) {
+            const message = error.message ?? error ?? 'Unknown error!'
+            this.logger.error(message, error)
+            return res.status(500).json({
+                error: message
+            })
+        }
+
+        res.end()
     }
 }

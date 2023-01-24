@@ -133,4 +133,18 @@ export default class GameService extends Service {
         }
     }
 
+    delete(room: Room) {
+        const game = this.findGameByRoom(room)
+        if (!game) {
+            throw new Error('No game found?!')
+        }
+
+        this.broadcast(room, {
+            event: 'DELETE',
+            data: {}
+        })
+
+        delete this.games[room.id]
+    }
+
 }
