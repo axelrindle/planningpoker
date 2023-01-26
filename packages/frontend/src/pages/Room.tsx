@@ -1,16 +1,20 @@
-import { faCheck, faChessRook, faClose } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faChessRook, faClose, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ReadyState } from 'react-use-websocket'
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket.js'
 import Button from '../components/Button'
+import Input from '../components/form/Input'
+import { useRoom } from '../query/room'
 import { useSelector } from '../store'
 
 export default function PageRoom() {
     const navigate = useNavigate()
     const { roomId } = useParams()
     const socketUrl = useSelector(state => state.config.socketUrl)
+
+    const { isLoading, error, data: room, refetch } = useRoom(roomId as string)
 
     const [messageHistory, setMessageHistory] = useState<MessageEvent[]>([])
     const { sendMessage, lastMessage, readyState } = useWebSocket(`${socketUrl}?room=${roomId}`)
@@ -61,38 +65,49 @@ export default function PageRoom() {
 
     return (
         <>
-            <div className="flex flex-col gap-1 mb-4">
-                <label className="text-sm font-medium" htmlFor="card">
-                    Card
-                </label>
-                <input
-                    type="number"
-                    name="card"
-                    min={0}
-                    className="
-                        w-36 p-4
-                        text-sm shadow-sm
-                        border-2 border-violet-200 rounded
-                    "
-                    onChange={e => setCard(e.target.value)}
-                />
+            <div className="flex flex-row">
+                <div className="flex-1">
+                    <p className="font-bold text-lg">
+                        {room.name}
+                    </p>
+                    <p className="text-sm">
+                        {room.description}
+                    </p>
+                </div>
+                <div className="flex flex-row items-center gap-8">
+                    <div>
+                        <p>
+                            Connection: <u>{connectionStatus}</u>
+                        </p>
+                        <p>
+                            You are: <u>{userId}</u>
+                        </p>
+                    </div>
+                    <Link
+                        to="/"
+                        className="bg-primary text-white px-8 py-4 rounded"
+                    >
+                        <FontAwesomeIcon icon={faRightFromBracket} />
+                        <span className="ml-2">
+                            Leave
+                        </span>
+                    </Link>
+                </div>
             </div>
-            <div className="flex flex-row items-start gap-4 mb-8">
-                <Link
-                    to="/"
-                    className="bg-primary text-white px-8 py-4 rounded"
-                >
-                    Leave
-                </Link>
+            <hr className="my-4" />
+            <Input
+                type="number"
+                name="card"
+                label="Card"
+                min={0}
+                onChange={e => setCard(e.target.value)}
+            />
+            <div className="flex flex-row items-start gap-4 my-8">
                 <Button
                     label="Select"
                     icon={faChessRook}
                     onClick={() => select()}
                 />
-            </div>
-
-            <div className="mb-8">
-                <p>You are: <u>{userId}</u></p>
             </div>
 
             <div className="mb-8 flex flex-row gap-4">
@@ -111,7 +126,7 @@ export default function PageRoom() {
                 ))}
             </div>
 
-            <div>
+            {/* <div>
                 <p>The WebSocket is currently <u>{connectionStatus}</u></p>
                 {lastMessage ? <p>Last message: {lastMessage.data}</p> : null}
                 <ul className="ml-8 list-disc">
@@ -119,7 +134,7 @@ export default function PageRoom() {
                         <li key={idx}>{message ? message.data : null}</li>
                     ))}
                 </ul>
-            </div>
+            </div> */}
         </>
     )
 }
