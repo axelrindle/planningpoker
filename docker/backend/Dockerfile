@@ -9,10 +9,10 @@ RUN adduser -s /bin/bash -D -h /app poker && \
 USER poker
 WORKDIR /app
 
-COPY  --chown=poker:poker packages/backend .
+COPY --chown=poker:poker packages/backend .
 RUN npm i
 
-ENV NODE_CONFIG_DIR=/config
+ENV NODE_CONFIG_DIR=/app/config:/config
 VOLUME /data
 VOLUME /config
 
