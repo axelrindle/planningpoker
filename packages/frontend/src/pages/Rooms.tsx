@@ -1,23 +1,54 @@
 import { faPlus, faRefresh } from '@fortawesome/free-solid-svg-icons'
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Button from '../components/Button'
 import ModalCreateRoom from '../modals/CreateRoom'
-import { useSelector } from '../store'
+import { useRooms } from '../query/room'
+
+interface RoomListProps {
+    rooms: any[]
+}
+
+function RoomList({ rooms }: RoomListProps) {
+    if (rooms === undefined) {
+        return <></>
+    }
+
+    return (
+        <div className="grid grid-cols-4 gap-8">
+            {rooms.length === 0 && (
+                <p>
+                    No Rooms yet!
+                </p>
+            )}
+            {rooms.length > 0 && rooms.map(room => (
+                <Link
+                    key={room.id}
+                    to={`/room/${room.id}`}
+                    className="bg-primary text-white px-8 py-4 rounded"
+                >
+                    <p className="mb-2">
+                        <span>{room.name}</span>
+                        &nbsp;
+                        <span className="text-gray-300">(#{room.id})</span>
+                    </p>
+                    <p className="text-xs">
+                        {room.description}
+                    </p>
+                    <p className="text-xs">
+                        {room.limit === null && <span>{room.users} users</span>}
+                        {room.limit !== null && <span>{room.users} / {room.limit} users</span>}
+                    </p>
+                </Link>
+            ))}
+        </div>
+    )
+}
 
 export default function PageRooms() {
-    const [rooms, setRooms] = useState<any[]>([])
-    const apiUrl = useSelector(state => state.config.apiUrl)
-
     const [isOpen, setOpen] = useState(false)
 
-    const loadRooms = useCallback(() => {
-        fetch(`${apiUrl}/api/room`)
-            .then(response => response.json())
-            .then(data => setRooms(data))
-    }, [apiUrl])
-
-    useEffect(() => loadRooms(), [loadRooms])
+    const { isLoading, error, data: rooms, refetch } = useRooms()
 
     return (
         <>
@@ -32,8 +63,9 @@ export default function PageRooms() {
                     <Button
                         label="Refresh"
                         icon={faRefresh}
-                        onClick={() => loadRooms()}
+                        onClick={() => refetch()}
                         hideLabel
+                        disabled={isLoading}
                     />
                     <Button
                         label="Add"
@@ -42,33 +74,13 @@ export default function PageRooms() {
                     />
                 </div>
             </div>
-            <div className="grid grid-cols-4 gap-8">
-                {rooms.length === 0 && (
-                    <p>
-                        No Rooms yet!
-                    </p>
-                )}
-                {rooms.length > 0 && rooms.map(room => (
-                    <Link
-                        key={room.id}
-                        to={`/room/${room.id}`}
-                        className="bg-primary text-white px-8 py-4 rounded"
-                    >
-                        <p className="mb-2">
-                            <span>{room.name}</span>
-                            &nbsp;
-                            <span className="text-gray-300">(#{room.id})</span>
-                        </p>
-                        <p className="text-xs">
-                            {room.description}
-                        </p>
-                        <p className="text-xs">
-                            {room.limit === null && <span>{room.users} users</span>}
-                            {room.limit !== null && <span>{room.users} / {room.limit} users</span>}
-                        </p>
-                    </Link>
-                ))}
-            </div>
+
+            {isLoading ? <p>Loading...</p> : <RoomList rooms={rooms} />}
+            {error && (
+                <p className="font-bold text-red-500">
+                    Error: {error.message}
+                </p>
+            )}
 
             <ModalCreateRoom
                 isOpen={isOpen}
