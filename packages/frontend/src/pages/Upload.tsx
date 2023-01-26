@@ -3,7 +3,7 @@ import { useTus } from 'use-tus'
 import { useSelector } from '../store'
 
 export default function PageUpload() {
-    const { upload, setUpload, isSuccess, error, remove } = useTus()
+    const { upload, setUpload, isSuccess, error } = useTus()
     const [hasFile, setHasFile] = useState(false)
     const [progress, setProgress] = useState(0)
     const apiUrl = useSelector(state => state.config.apiUrl)
@@ -41,6 +41,14 @@ export default function PageUpload() {
 
         upload.start()
     }, [upload])
+
+    if (isSuccess) {
+        return (
+            <p className="font-bold text-green-500">
+                Success!
+            </p>
+        )
+    }
 
     return (
         <div className="flex flex-col items-start gap-4">

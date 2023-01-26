@@ -14,9 +14,8 @@ export default function PageRoom() {
     const { roomId } = useParams()
     const socketUrl = useSelector(state => state.config.socketUrl)
 
-    const { isLoading, error, data: room, refetch } = useRoom(roomId as string)
+    const { isLoading, error, data: room } = useRoom(roomId as string)
 
-    const [messageHistory, setMessageHistory] = useState<MessageEvent[]>([])
     const { sendMessage, lastMessage, readyState } = useWebSocket(`${socketUrl}?room=${roomId}`)
     const connectionStatus = {
         [ReadyState.CONNECTING]: 'Connecting',
@@ -43,8 +42,6 @@ export default function PageRoom() {
 
     useEffect(() => {
         if (lastMessage !== null) {
-            setMessageHistory(prev => prev.concat(lastMessage))
-
             const data = JSON.parse(lastMessage.data)
             switch (data.event) {
                 case 'HELLO':
@@ -61,7 +58,23 @@ export default function PageRoom() {
                     break;
             }
         }
-    }, [lastMessage, setMessageHistory, navigate])
+    }, [lastMessage, navigate])
+
+    if (isLoading) {
+        return (
+            <p className="font-bold">
+                Loading...
+            </p>
+        )
+    }
+
+    if (error) {
+        return (
+            <p className="font-bold text-red-500">
+                Something went wrong: {error.message}
+            </p>
+        )
+    }
 
     return (
         <>
