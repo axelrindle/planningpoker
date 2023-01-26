@@ -9,7 +9,7 @@ if (! process.env['DISABLE_BANNER']) {
 }
 
 const container = await startContainer()
-const server = startServer(container)
+const server = await startServer(container)
 
 createTerminus(server, {
     signals: ['SIGINT', 'SIGTERM'],
