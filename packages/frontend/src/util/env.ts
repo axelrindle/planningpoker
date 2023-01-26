@@ -16,17 +16,9 @@ declare global {
  *          not be found.
  */
 export default function env(key: string): string | undefined {
-    let value: string | undefined
-
     if (typeof window.__RUNTIME_CONFIG__ !== 'undefined') {
-        value = window.__RUNTIME_CONFIG__[key]
-    }
-    else if (typeof process !== 'undefined') {
-        value = process.env[key]
-    }
-    else {
-        throw new Error('Unable to retrieve environment information!')
+        return window.__RUNTIME_CONFIG__[key]
     }
 
-    return value
+    return process.env[key]
 }
