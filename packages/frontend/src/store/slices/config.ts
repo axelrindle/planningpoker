@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, SliceCaseReducers } from '@reduxjs/toolkit'
+import env from '../../util/env'
 
 interface ConfigState {
     apiUrl: string
@@ -12,7 +13,7 @@ interface PayloadData {
 }
 
 //@ts-ignore
-const apiUrl = new URL(process.env.REACT_APP_API_URL)
+const apiUrl = new URL(env('REACT_APP_API_URL'))
 const socketUrl = new URL(apiUrl)
 socketUrl.port = '' + (parseInt(socketUrl.port) + 1)
 
