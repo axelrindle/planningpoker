@@ -1,4 +1,4 @@
-**/config
+**/local.json5
 **/data
 **/node_modules
 **/nodemon.json
