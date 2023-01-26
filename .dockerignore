@@ -4,3 +4,6 @@
 **/nodemon.json
 **/tsconfig.json
 **/src
+**/tailwind.config.js
+**/.env
+**/public
