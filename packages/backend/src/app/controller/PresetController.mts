@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import DatabaseService from '../../service/database.js'
+import DatabaseService from '../../service/database.mjs'
 
 export default class PresetController {
 

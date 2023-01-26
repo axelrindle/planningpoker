@@ -1,6 +1,6 @@
 import { WebSocket } from 'ws'
-import { Message, Room, Service } from '../types.js'
-import DatabaseService from './database.js'
+import { Message, Room, Service } from '../types.mjs'
+import DatabaseService from './database.mjs'
 
 type GameState = 'CHOOSE' | 'SHOW'
 

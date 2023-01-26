@@ -1,8 +1,8 @@
 import { asClass, asValue, AwilixContainer, createContainer } from 'awilix'
 import config from 'config'
-import { makeLogger } from './logger.js'
-import { Service } from './types.js'
-import { cwd } from './util.js'
+import { makeLogger } from './logger.mjs'
+import { Service } from './types.mjs'
+import { cwd } from './util.mjs'
 
 const logger = makeLogger('container')
 const container = createContainer({
@@ -11,13 +11,13 @@ const container = createContainer({
 
 container.register('config', asValue(config))
 
-container.loadModules(
+await container.loadModules(
     [
         'service/*'
     ],
     {
         cwd: cwd(import.meta.url),
-        //esModules: true,
+        esModules: true,
         formatName: 'camelCase',
         resolverOptions: {
             lifetime: 'SINGLETON',

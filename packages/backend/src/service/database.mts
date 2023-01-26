@@ -1,12 +1,12 @@
 import { readFile } from 'fs/promises'
-import { basename, dirname, join } from 'path'
+import { basename, join } from 'path'
 import { format } from 'sql-formatter'
-import { Database } from 'sqlite3'
+import { default as sqlite3 } from 'sqlite3'
 import { Logger } from 'winston'
-import { makeLogger } from '../logger.js'
-import { Service } from '../types.js'
-import { glob } from '../util.js'
-import StorageService from './storage.js'
+import { makeLogger } from '../logger.mjs'
+import { Service } from '../types.mjs'
+import { glob } from '../util.mjs'
+import StorageService from './storage.mjs'
 
 interface Migration {
     name: string
@@ -20,7 +20,7 @@ export default class DatabaseService extends Service {
     private logger: Logger
     private storage: StorageService
 
-    private _database?: Database
+    private _database?: sqlite3.Database
 
     constructor(storage: StorageService) {
         super()
@@ -29,13 +29,13 @@ export default class DatabaseService extends Service {
         this.storage = storage
     }
 
-    private get database(): Database {
+    private get database(): sqlite3.Database {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this._database!
     }
 
     override async init(): Promise<void> {
-        this._database = new Database(this.storage.resolve('db.sqlite'))
+        this._database = new sqlite3.Database(this.storage.resolve('db.sqlite'))
         this._database.on('trace', sql => {
             this.logger.debug('Executing SQL: \n' + format(sql, {
                 language: 'sqlite',
@@ -59,8 +59,8 @@ export default class DatabaseService extends Service {
             }
         }
 
-        const cwd = dirname(dirname(import.meta.url)).slice(6)
-        const migrationFiles = await glob('database/*.sql', { cwd })
+        const cwd = join(process.cwd(), 'resources/database')
+        const migrationFiles = await glob('*.sql', { cwd })
         for (const file of migrationFiles) {
             const name = basename(file, '.sql')
             if (migrations.findIndex(el => el.name === name) === -1) {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { basename } from 'path'
-import DatabaseService from '../../service/database.js'
-import StorageService from '../../service/storage.js'
+import DatabaseService from '../../service/database.mjs'
+import StorageService from '../../service/storage.mjs'
 
 export default class UploadController {
 

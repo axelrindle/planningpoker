@@ -2,9 +2,9 @@ import { FileStore } from '@tus/file-store'
 import { Server } from '@tus/server'
 import { AwilixContainer } from 'awilix'
 import express, { Router } from 'express'
-import { makeLogger } from '../logger.js'
-import DatabaseService from '../service/database.js'
-import StorageService from '../service/storage.js'
+import { makeLogger } from '../logger.mjs'
+import DatabaseService from '../service/database.mjs'
+import StorageService from '../service/storage.mjs'
 
 export default function makeUploader(container: AwilixContainer): Router {
     const storage = container.resolve<StorageService>('storage')

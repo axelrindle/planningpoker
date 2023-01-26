@@ -1,8 +1,8 @@
 import { Request, Response } from 'express'
 import { Logger } from 'winston'
-import { makeLogger } from '../../logger.js'
-import DatabaseService from '../../service/database.js'
-import GameService from '../../service/game.js'
+import { makeLogger } from '../../logger.mjs'
+import DatabaseService from '../../service/database.mjs'
+import GameService from '../../service/game.mjs'
 
 export default class RoomController {
 

@@ -1,5 +1,5 @@
 import { AwilixContainer } from 'awilix'
-import { loadControllers, scopePerRequest } from 'awilix-express'
+import { scopePerRequest } from 'awilix-express'
 import bodyParser from 'body-parser'
 import config, { IConfig } from 'config'
 import cors from 'cors'
@@ -7,11 +7,12 @@ import express, { ErrorRequestHandler } from 'express'
 import helmet from 'helmet'
 import { Server } from 'http'
 import { WebSocketServer } from 'ws'
-import requestLogger from './app/middleware/morgan.js'
-import makeUploader from './app/upload.js'
-import socketHandler from './app/websocket.js'
-import { makeLogger } from './logger.js'
-import { cwd } from './util.js'
+import requestLogger from './app/middleware/morgan.mjs'
+import makeUploader from './app/upload.mjs'
+import socketHandler from './app/websocket.mjs'
+import { makeLogger } from './logger.mjs'
+import { cwd } from './util.mjs'
+import { loadControllers } from './util/awilix-express/controller.js'
 
 const logger = makeLogger('server')
 const app = express()
@@ -36,7 +37,7 @@ function registerMiddleware() {
     app.set('error handler', handleError);
 }
 
-function loadRoutes() {
+async function loadRoutes() {
     app.use((req, res, next) => {
         const container = req.app.get('container') as AwilixContainer
         if (container) {
@@ -46,14 +47,14 @@ function loadRoutes() {
             next()
         }
     })
-    app.use(loadControllers('app/route/*', { cwd: cwd(import.meta.url) }))
+    app.use(await loadControllers('app/route/*', { cwd: cwd(import.meta.url) }))
 }
 
-export function startServer(container: AwilixContainer): Server {
+export async function startServer(container: AwilixContainer): Promise<Server> {
     app.set('container', container)
 
     registerMiddleware()
-    loadRoutes()
+    await loadRoutes()
 
     app.use('/upload', makeUploader(container))
 

@@ -1,7 +1,7 @@
 import { createTerminus } from '@godaddy/terminus'
 import { readFile } from 'fs/promises'
-import startContainer from './container.js'
-import { startServer } from './server.js'
+import startContainer from './container.mjs'
+import { startServer } from './server.mjs'
 
 if (! process.env['DISABLE_BANNER']) {
     const banner = await readFile('resources/banner.txt')
@@ -9,7 +9,7 @@ if (! process.env['DISABLE_BANNER']) {
 }
 
 const container = await startContainer()
-const server = startServer(container)
+const server = await startServer(container)
 
 createTerminus(server, {
     signals: ['SIGINT', 'SIGTERM'],

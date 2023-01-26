@@ -3,8 +3,8 @@ import { stat } from 'fs/promises'
 import mkdirp from 'mkdirp'
 import { isAbsolute, join, resolve } from 'path'
 import { Logger } from 'winston'
-import { makeLogger } from '../logger.js'
-import { Service } from '../types.js'
+import { makeLogger } from '../logger.mjs'
+import { Service } from '../types.mjs'
 
 export default class StorageService extends Service {
 

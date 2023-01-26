@@ -5,10 +5,8 @@
     },
 
     logging: {
-        wog: {
-            level: 'info',
-            timestamp: 'DD.MM.YYYY HH:mm:ss.SSS'
-        },
+        level: 'info',
+        timestamp: 'DD.MM.YYYY HH:mm:ss.SSS',
         http: {
             format: 'short',
             enabled: true

@@ -3,10 +3,10 @@ import { randomUUID } from 'crypto'
 import { IncomingMessage } from 'http'
 import { parse } from 'url'
 import { WebSocket } from 'ws'
-import { makeLogger } from '../logger.js'
-import DatabaseService from '../service/database.js'
-import GameService from '../service/game.js'
-import { Message } from '../types.js'
+import { makeLogger } from '../logger.mjs'
+import DatabaseService from '../service/database.mjs'
+import GameService from '../service/game.mjs'
+import { Message } from '../types.mjs'
 
 const logger = makeLogger('websocket')
 const users: string[] = []
