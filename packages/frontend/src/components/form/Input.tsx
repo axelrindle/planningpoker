@@ -5,12 +5,15 @@ import { mergeFormData } from '../../store/slices/formData'
 interface Props {
     type: HTMLInputTypeAttribute
     name: string
+    min?: number
+    max?: number
     label: string
     placeholder?: string
     help?: string
     formData?: string
     contentAfter?: ReactNode
     containerClassName?: string
+    onChange?: ChangeEventHandler<HTMLInputElement>
 }
 
 function useInitialValue(root: string, key: string) {
@@ -52,7 +55,9 @@ export default function Input(props: Props) {
                     "
                     placeholder={props.placeholder}
                     defaultValue={props.formData ? _initialValue : undefined}
-                    onChange={props.formData ? _setFormData : undefined}
+                    onChange={props.formData ? _setFormData : props.onChange}
+                    min={props.min}
+                    max={props.max}
                 />
                 {props.contentAfter}
             </div>
