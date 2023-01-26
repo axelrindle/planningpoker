@@ -42,7 +42,7 @@ const baseFormat = () => {
 
     return combine(
         format.timestamp({
-            format: config.get('logging.wog.timestamp')
+            format: config.get('logging.timestamp')
         }),
         format.errors({ stack: true }),
         format.splat(),
