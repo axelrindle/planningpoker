@@ -21,13 +21,13 @@ RUN apt-get -y update && \
 
 FROM bitnami/nginx:1.23
 
+USER 0
+
 COPY --from=build-jo /usr/local/src/jo/jo /usr/local/bin
 COPY docker/frontend/rootfs /
-COPY docker/frontend/docker-entrypoint.d /docker-entrypoint.d
+COPY --chown=1001:0 packages/frontend/build /app
 
-USER poker
+RUN chown -R 1001:0 /app
+
+USER 1001
 WORKDIR /app
-
-COPY --chown=poker:poker packages/frontend .
-
-RUN find . -type f -name "*.tgz" -exec tar xvf {} --strip-components 1 \; -exec rm {} \;

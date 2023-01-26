@@ -13,4 +13,4 @@ if [ "$OBJECT" = "" ]; then
     OBJECT="{}"
 fi
 
-echo "window.__RUNTIME_CONFIG__ = $OBJECT;" > "/app/build/runtime-env.js"
+echo "window.__RUNTIME_CONFIG__ = $OBJECT;" > "/app/runtime-env.js"
