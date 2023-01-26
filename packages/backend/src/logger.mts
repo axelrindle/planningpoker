@@ -56,7 +56,7 @@ const logger = createLogger({
         format.colorize(),
         baseFormat()
     ),
-    level: config.has('logging.wog.level') ? config.get('logging.wog.level') : 'info',
+    level: config.has('logging.level') ? config.get('logging.level') : 'info',
     transports: [
         new transports.Console(),
         /*new transports.File({

@@ -7,11 +7,11 @@ import express, { ErrorRequestHandler } from 'express'
 import helmet from 'helmet'
 import { Server } from 'http'
 import { WebSocketServer } from 'ws'
-import requestLogger from './app/middleware/morgan.js'
-import makeUploader from './app/upload.js'
-import socketHandler from './app/websocket.js'
-import { makeLogger } from './logger.js'
-import { cwd } from './util.js'
+import requestLogger from './app/middleware/morgan.mjs'
+import makeUploader from './app/upload.mjs'
+import socketHandler from './app/websocket.mjs'
+import { makeLogger } from './logger.mjs'
+import { cwd } from './util.mjs'
 
 const logger = makeLogger('server')
 const app = express()

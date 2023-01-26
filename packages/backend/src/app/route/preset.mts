@@ -1,5 +1,5 @@
 import { createController } from 'awilix-express'
-import PresetController from '../controller/PresetController.js'
+import PresetController from '../controller/PresetController.mjs'
 
 export default createController(PresetController)
     .prefix('/api/preset')

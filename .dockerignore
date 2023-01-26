@@ -1,6 +1,6 @@
-art
-dist
-build
-
-packages/backend/config
-packages/backend/data
+**/config
+**/data
+**/node_modules
+**/nodemon.json
+**/tsconfig.json
+**/src

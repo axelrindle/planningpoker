@@ -1,5 +1,5 @@
 import { createController } from 'awilix-express'
-import RoomController from '../controller/RoomController.js'
+import RoomController from '../controller/RoomController.mjs'
 
 export default createController(RoomController)
     .prefix('/api/room')

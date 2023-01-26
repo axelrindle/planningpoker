@@ -12,10 +12,8 @@
     "build": "tsc",
     "test": "node ./__tests__/backend.test.js"
   },
-  "files": [
-    "dist"
-  ],
   "devDependencies": {
+    "@sindresorhus/tsconfig": "^3.0.1",
     "@types/bcrypt": "^5.0.0",
     "@types/config": "^3.3.0",
     "@types/cors": "^2.8.13",
@@ -24,7 +22,8 @@
     "@types/glob": "^8.0.0",
     "@types/morgan": "^1.9.4",
     "@types/ws": "^8.5.4",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "tsx": "^3.12.2"
   },
   "dependencies": {
     "@godaddy/terminus": "^4.11.2",
