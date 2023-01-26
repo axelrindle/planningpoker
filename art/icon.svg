@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="120.064mm"
+   height="197.29601mm"
+   viewBox="0 0 120.06401 197.29601"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="icon.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.9927668"
+     inkscape:cx="156.63296"
+     inkscape:cy="387.80507"
+     inkscape:window-width="1920"
+     inkscape:window-height="995"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <rect
+       x="689.906"
+       y="204.93018"
+       width="371.24815"
+       height="515.00755"
+       id="rect463" />
+  </defs>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="rect234"
+       style="fill:#ffffff;stroke-width:1.32292"
+       d="M 33.822742 0 C 15.085015 5.0132637e-15 -5.0132687e-15 15.085015 0 33.822742 L 0 163.47323 C 5.0132637e-15 182.21095 15.085015 197.29597 33.822742 197.29597 L 86.241764 197.29597 C 104.97949 197.29597 120.06451 182.21095 120.06451 163.47323 L 120.06451 33.822742 C 120.06451 15.085015 104.97949 -5.0132687e-15 86.241764 0 L 33.822742 0 z M 28.988928 19.999813 C 33.968825 19.999813 37.978044 24.009031 37.978044 28.988928 L 37.978044 48.749996 C 37.978044 53.729893 33.968825 57.739111 28.988928 57.739111 C 24.009031 57.739111 19.999813 53.729893 19.999813 48.749996 L 19.999813 28.988928 C 19.999813 24.009031 24.009031 19.999813 28.988928 19.999813 z M 91.075061 139.55686 C 96.054963 139.55686 100.06418 143.56607 100.06418 148.54597 L 100.06418 168.30704 C 100.06418 173.28694 96.054963 177.29615 91.075061 177.29615 C 86.095159 177.29615 82.085946 173.28694 82.085946 168.30704 L 82.085946 148.54597 C 82.085946 143.56607 86.095159 139.55686 91.075061 139.55686 z " />
+  </g>
+</svg>
