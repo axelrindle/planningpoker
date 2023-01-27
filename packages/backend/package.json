@@ -10,7 +10,8 @@
     "start": "NODE_ENV=development tsx src/index.mts",
     "watch": "NODE_ENV=development nodemon",
     "build": "tsc",
-    "test": "node ./__tests__/backend.test.js"
+    "test": "node ./__tests__/backend.test.js",
+    "clean": "rm -rf dist"
   },
   "devDependencies": {
     "@sindresorhus/tsconfig": "^3.0.1",
