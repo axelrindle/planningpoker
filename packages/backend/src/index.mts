@@ -15,7 +15,13 @@ createTerminus(server, {
     signals: ['SIGINT', 'SIGTERM'],
     onSignal: async () => {
         process.stdout.write('\n') // insert newline after escape sequence
-        await container.dispose()
-        console.log('Disposed. Goodbye :)')
+        try {
+            await container.dispose()
+            console.log('Disposed. Goodbye :)')
+            process.exit(0)
+        } catch (error) {
+            console.error(error)
+            process.exit(1)
+        }
     }
 })
