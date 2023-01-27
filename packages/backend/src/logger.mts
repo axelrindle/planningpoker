@@ -56,6 +56,12 @@ const logger = createLogger({
         format.colorize(),
         baseFormat()
     ),
+    levels: {
+        'error': 0,
+        'warn': 1,
+        'info': 2,
+        'debug': 3
+    },
     level: config.has('logging.level') ? config.get('logging.level') : 'info',
     transports: [
         new transports.Console(),
