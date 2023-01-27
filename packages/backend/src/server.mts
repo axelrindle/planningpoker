@@ -60,7 +60,7 @@ export async function startServer(container: AwilixContainer): Promise<Server> {
 
     const config = container.resolve('config') as IConfig
     const host = config.get('server.host') as string
-    const port = config.get('server.port') as number
+    const port = parseInt(config.get('server.port') as string)
 
     // TODO: Expose via /socket
     const wssPort = port + 1
