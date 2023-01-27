@@ -1,0 +1,19 @@
+{
+    "$schema": "./schema.json",
+
+    "data_directory": "PP_DATA_DIRECTORY",
+
+    "server": {
+        "host": "PP_SERVER_HOST",
+        "port": "PP_SERVER_PORT"
+    },
+
+    "logging": {
+        "level": "PP_LOG_LEVEL",
+        "timestamp": "PP_LOG_TIMESTAMP",
+        "http": {
+            "enabled": "PP_LOG_HTTP_ENABLED",
+            "format": "PP_LOG_HTTP_FORMAT"
+        }
+    }
+}
