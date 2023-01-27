@@ -27,7 +27,8 @@ COPY --from=build-jo /usr/local/src/jo/jo /usr/local/bin
 COPY docker/frontend/rootfs /
 COPY --chown=1001:0 packages/frontend/build /app
 
-RUN chown -R 1001:0 /app
+RUN chown -R 1001:0 /app && \
+    chmod -R g=u /app
 
 USER 1001
 WORKDIR /app
