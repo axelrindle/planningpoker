@@ -17,4 +17,4 @@ ENV PP_DATA_DIRECTORY=/data
 VOLUME /data
 VOLUME /config
 
-CMD node dist/index.mjs
+CMD node build/index.mjs

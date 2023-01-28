@@ -41,7 +41,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: backend
-        path: packages/backend/dist
+        path: packages/backend/build
     - name: Upload frontend artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -64,7 +64,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ matrix.package }}
-          path: packages/${{ matrix.package }}
+          path: packages/${{ matrix.package }}/build
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v2
