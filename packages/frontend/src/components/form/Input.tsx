@@ -10,6 +10,7 @@ interface Props {
     label: string
     placeholder?: string
     help?: string
+    error?: string
     formData?: string
     contentAfter?: ReactNode
     containerClassName?: string
@@ -61,6 +62,11 @@ export default function Input(props: Props) {
                 />
                 {props.contentAfter}
             </div>
+            {props.error && (
+                <span className="text-sm text-red-500">
+                    {props.error}
+                </span>
+            )}
             {props.help && (
                 <span className="text-xs text-gray-500">
                     {props.help}
