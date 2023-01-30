@@ -114,12 +114,6 @@ export default function socketHandler(container: AwilixContainer) {
                 }
 
                 switch (theData.event) {
-                    case 'DEBUG':
-                        if (!logger.isDebugEnabled()) return
-                        logger.debug(uuid + ' sent a message:')
-                        process.stdout.write(JSON.stringify(theData.data, null, 4))
-                        process.stdout.write('\n')
-                        break
                     case 'SELECT':
                         // eslint-disable-next-line no-case-declarations
                         const user = gameManager.findUser(uuid)!

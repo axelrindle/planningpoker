@@ -20,7 +20,7 @@ export interface Room {
     name: string
 }
 
-export type Event = 'HELLO' | 'UPDATE' | 'SELECT' | 'DEBUG' | 'DELETE'
+export type Event = 'HELLO' | 'UPDATE' | 'SELECT' | 'DELETE'
 
 export interface Message {
     userId?: string
