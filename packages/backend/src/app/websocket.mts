@@ -56,6 +56,14 @@ export default function socketHandler(container: AwilixContainer) {
             return
         }
 
+        if (room.limit && gameManager.getUsers(room) >= room.limit) {
+            socket.send(JSON.stringify({
+                error: 'This room is full!'
+            }))
+            socket.close(4000)
+            return
+        }
+
         function sendUpdate() {
             gameManager.broadcast(room, {
                 event: 'UPDATE',
