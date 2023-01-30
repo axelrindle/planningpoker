@@ -32,9 +32,11 @@ function RoomList({ rooms }: RoomListProps) {
                         &nbsp;
                         <span className="text-gray-300">(#{room.id})</span>
                     </p>
+                    {room.description && (
                     <p className="text-xs">
                         {room.description}
                     </p>
+                    )}
                     <p className="text-xs">
                         {room.limit === null && <span>{room.users} users</span>}
                         {room.limit !== null && <span>{room.users} / {room.limit} users</span>}
