@@ -1,6 +1,6 @@
 {
     "$schema": "https://json.schemastore.org/nodemon.json",
-    "ext": "ts,yml,yaml,json,json5",
+    "ext": "ts,mts,yml,yaml,json,json5",
     "watch": [
         "config/*",
         "src/**/*"
