@@ -15,7 +15,7 @@ function RoomList({ rooms }: RoomListProps) {
     }
 
     return (
-        <div className="grid grid-cols-4 gap-8">
+        <div className="grid grid-cols-4 gap-8 items-start">
             {rooms.length === 0 && (
                 <p>
                     No Rooms yet!
@@ -33,9 +33,9 @@ function RoomList({ rooms }: RoomListProps) {
                         <span className="text-gray-300">(#{room.id})</span>
                     </p>
                     {room.description && (
-                    <p className="text-xs">
-                        {room.description}
-                    </p>
+                        <p className="text-xs">
+                            {room.description}
+                        </p>
                     )}
                     <p className="text-xs">
                         {room.limit === null && <span>{room.users} users</span>}
