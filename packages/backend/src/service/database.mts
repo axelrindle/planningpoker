@@ -86,18 +86,27 @@ export default class DatabaseService extends Service {
         })
     }
 
-    querySingle<R = any>(sql: string): Promise<R> {
+    run(sql: string, params: Record<string, any> = {}): Promise<void> {
         return new Promise((resolve, reject) => {
-            this.database.get(sql, (err, result) => {
+            this.database.run(sql, params, (err) => {
+                if (err) reject(err)
+                else resolve()
+            })
+        })
+    }
+
+    querySingle<R = any>(sql: string, params: Record<string, any> = {}): Promise<R> {
+        return new Promise((resolve, reject) => {
+            this.database.get(sql, params, (err, result) => {
                 if (err) reject(err)
                 else resolve(result)
             })
         })
     }
 
-    queryAll<R = any>(sql: string): Promise<R[]> {
+    queryAll<R = any>(sql: string, params: Record<string, any> = {}): Promise<R[]> {
         return new Promise((resolve, reject) => {
-            this.database.all(sql, (err, result) => {
+            this.database.all(sql, params, (err, result) => {
                 if (err) reject(err)
                 else resolve(result)
             })
