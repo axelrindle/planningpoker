@@ -40,14 +40,6 @@ export default class RoomController {
 
     async create(req: Request, res: Response) {
         const { name, description, limit } = req.body
-        if (!name) {
-            res.status(400).json({
-                error: 'No name given!'
-            })
-            return
-        }
-
-        // TODO: Validation
         const room = { name, description, limit }
 
         try {
