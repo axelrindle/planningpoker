@@ -9,13 +9,19 @@ if (! process.env['DISABLE_BANNER']) {
 }
 
 const container = await startContainer()
-const server = await startServer(container)
+const [http, websocket] = await startServer(container)
 
-createTerminus(server, {
+createTerminus(http, {
     signals: ['SIGINT', 'SIGTERM'],
     onSignal: async () => {
         process.stdout.write('\n') // insert newline after escape sequence
         try {
+            await new Promise<void>((resolve, reject) => {
+                websocket?.close(err => {
+                    if(err) reject(err)
+                    else resolve()
+                })
+            })
             await container.dispose()
             console.log('Disposed. Goodbye :)')
             process.exit(0)

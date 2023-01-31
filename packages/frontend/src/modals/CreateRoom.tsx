@@ -1,8 +1,7 @@
-import { faCheck, faClose, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck, faClose } from '@fortawesome/free-solid-svg-icons'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
 import Input from '../components/form/Input'
+import InputPassword from '../components/form/InputPassword'
 import Modal, { ChildProps } from '../components/Modal'
 import { useDispatch, useSelector } from '../store'
 import { clearFormData, FormData } from '../store/slices/formData'
@@ -13,7 +12,6 @@ const FORMDATA_KEY = 'room_create'
 interface Props extends ChildProps {}
 
 export default function ModalCreateRoom(props: Props) {
-    const [showPassword, setShowPassword] = useState(false)
     const formData = useSelector(state => state.formData[FORMDATA_KEY])
     const apiUrl = useSelector(state => state.config.apiUrl)
     const dispatch = useDispatch()
@@ -85,24 +83,13 @@ export default function ModalCreateRoom(props: Props) {
                 />
 
                 <Input
-                    type={showPassword ? 'text' : 'password'}
-                    name="password"
-                    label="Password"
-                    help="Leave empty to create a public room."
+                    type="number"
+                    name="limit"
+                    label="Limit"
                     formData={FORMDATA_KEY}
-                    error={getError('password')}
-                    contentAfter={(
-                        <div
-                            className="flex justify-center items-center w-8"
-                            title="Toggle password visibility"
-                        >
-                            <FontAwesomeIcon
-                                icon={showPassword ? faEye : faEyeSlash}
-                                onClick={() => setShowPassword(!showPassword)}
-                                className="text-xl text-primary cursor-pointer dark:text-white"
-                            />
-                        </div>
-                    )}
+                    help="Limit the user count of a Room. Set to 0 to disable."
+                    error={getError('limit')}
+                    min={2}
                 />
 
                 <Input
@@ -111,7 +98,16 @@ export default function ModalCreateRoom(props: Props) {
                     label="Description"
                     placeholder="My awesome room is so awesome"
                     formData={FORMDATA_KEY}
+                    error={getError('description')}
                     containerClassName="col-span-2"
+                />
+
+                <InputPassword
+                    name="password"
+                    label="Password"
+                    help="Leave empty to create a public room."
+                    formData={FORMDATA_KEY}
+                    error={getError('password')}
                 />
             </div>
         </Modal>

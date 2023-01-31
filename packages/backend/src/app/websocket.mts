@@ -1,12 +1,20 @@
 import { AwilixContainer } from 'awilix'
 import { randomUUID } from 'crypto'
 import { IncomingMessage } from 'http'
+import { Duplex } from 'stream'
 import { parse } from 'url'
-import { WebSocket } from 'ws'
+import { WebSocket, WebSocketServer } from 'ws'
 import { makeLogger } from '../logger.mjs'
 import DatabaseService from '../service/database.mjs'
 import GameService from '../service/game.mjs'
-import { Message } from '../types.mjs'
+import { Message, Room } from '../types.mjs'
+import { checkHash } from '../util/hash.mjs'
+
+declare module 'http' {
+    interface IncomingMessage {
+        room: Room
+    }
+}
 
 const logger = makeLogger('websocket')
 const users: string[] = []
@@ -33,7 +41,15 @@ function sendMessage(socket: WebSocket, message: Message) {
     socket.send(JSON.stringify(message))
 }
 
-export default function socketHandler(container: AwilixContainer) {
+function onUpgrade(wss: WebSocketServer) {
+    return (req: IncomingMessage, socket: Duplex, head: Buffer) => {
+        wss.handleUpgrade(req, socket, head, (ws) => {
+            wss.emit('connection', ws, req)
+        })
+    }
+}
+
+function onConnection(container: AwilixContainer) {
     const database = container.resolve<DatabaseService>('database')
     const gameManager = container.resolve<GameService>('game')
 
@@ -47,7 +63,7 @@ export default function socketHandler(container: AwilixContainer) {
             return
         }
 
-        const room = await database.querySingle(`select * from room where id = ${url.query['room']}`)
+        const room = await database.querySingle(`select * from room where id = ${url.query['room']}`) as Room
         if (!room) {
             socket.send(JSON.stringify({
                 error: 'Unknown room ID!'
@@ -61,6 +77,27 @@ export default function socketHandler(container: AwilixContainer) {
                 error: 'This room is full!'
             }))
             socket.close(4000)
+            return
+        }
+
+        if (room.password) {
+            const end = () => {
+                socket.send(JSON.stringify({
+                    error: 'Unauthorized!'
+                }))
+                socket.close(3000)
+            }
+            const token = req.headers.authorization
+            if (!token || !token?.startsWith('Bearer')) {
+                end()
+            }
+            const split = token?.split(' ')
+            if (split?.length != 2) {
+                end()
+            }
+            if (!await checkHash(room.password, split?.[1])) {
+                end()
+            }
             return
         }
 
@@ -135,3 +172,5 @@ export default function socketHandler(container: AwilixContainer) {
         })
     }
 }
+
+export default { onUpgrade, onConnection }

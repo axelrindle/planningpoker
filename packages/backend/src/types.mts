@@ -1,3 +1,6 @@
+import { AwilixContainer } from 'awilix'
+import { Request as ExpressRequest } from 'express'
+
 export abstract class Service {
     /**
      * Defines the priority of this service.
@@ -18,6 +21,9 @@ export abstract class Service {
 export interface Room {
     id: number
     name: string
+    description?: string
+    limit?: number
+    password?: string
 }
 
 export type Event = 'HELLO' | 'UPDATE' | 'SELECT' | 'DELETE'
@@ -26,4 +32,8 @@ export interface Message {
     userId?: string
     event: Event
     data: any
+}
+
+export interface Request extends ExpressRequest {
+    readonly container: AwilixContainer
 }

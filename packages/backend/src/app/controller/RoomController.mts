@@ -3,6 +3,7 @@ import { Logger } from 'winston'
 import { makeLogger } from '../../logger.mjs'
 import DatabaseService from '../../service/database.mjs'
 import GameService from '../../service/game.mjs'
+import { hash } from '../../util/hash.mjs'
 
 export default class RoomController {
 
@@ -20,6 +21,8 @@ export default class RoomController {
         const rooms = await this.database.queryAll('select * from room')
         for (const room of rooms) {
             room.users = this.game.getUsers(room)
+            room.private = room.password !== null
+            delete room.password
         }
         res.json(rooms)
     }
@@ -35,18 +38,26 @@ export default class RoomController {
             return
         }
 
+        room.private = room.password !== undefined
+        delete room.password
+
         res.json(room)
     }
 
     async create(req: Request, res: Response) {
-        const { name, description, limit } = req.body
-        const room = { name, description, limit }
+        const { name, description, limit, password } = req.body
+
+        let passwordEncrypted: string|undefined = undefined
+        if (password) {
+            passwordEncrypted = await hash(password)
+        }
 
         try {
-            await this.database.run('insert into room values (null, $name, $description, $limit)', {
+            await this.database.run('insert into room values (null, $name, $description, $limit, $password)', {
                 $name: name,
                 $description: description,
-                $limit: limit
+                $limit: limit,
+                $password: passwordEncrypted
             })
             await this.game.updateGames()
             res.end()

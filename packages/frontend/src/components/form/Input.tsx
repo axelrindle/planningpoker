@@ -2,7 +2,7 @@ import { ChangeEventHandler, HTMLInputTypeAttribute, ReactNode, useCallback } fr
 import { useDispatch, useSelector } from '../../store'
 import { mergeFormData } from '../../store/slices/formData'
 
-interface Props {
+export interface Props {
     type: HTMLInputTypeAttribute
     name: string
     min?: number

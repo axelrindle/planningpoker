@@ -2,10 +2,10 @@ import { faCheck, faChessRook, faClose, faRightFromBracket } from '@fortawesome/
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { ReadyState } from 'react-use-websocket'
-import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket.js'
+import useWebSocket, { ReadyState } from 'react-use-websocket'
 import Button from '../components/Button'
 import Input from '../components/form/Input'
+import ModalRoomPassword from '../modals/RoomPassword'
 import { useRoom } from '../query/room'
 import { useSelector } from '../store'
 
@@ -16,7 +16,16 @@ export default function PageRoom() {
 
     const { isLoading, error, data: room } = useRoom(roomId as string)
 
-    const { sendMessage, lastMessage, readyState } = useWebSocket(`${socketUrl}?room=${roomId}`)
+    const [askPassword, setAskPassword] = useState(false)
+    const [password, setPassword] = useState<string>('')
+
+    // TODO: Authentication using Header not working with browser WebSocket API yet
+    // See https://github.com/whatwg/websockets/issues/16
+    const { sendMessage, lastMessage, readyState } = useWebSocket(
+        `${socketUrl}?room=${roomId}`,
+        {},
+        room !== undefined && (!room.private || password !== '')
+    )
     const connectionStatus = {
         [ReadyState.CONNECTING]: 'Connecting',
         [ReadyState.OPEN]: 'Open',
@@ -39,6 +48,18 @@ export default function PageRoom() {
             }
         }))
     }
+
+    useEffect(() => {
+        if (!room) return
+        if (room.private) {
+            setAskPassword(true)
+        }
+    }, [room])
+    useEffect(() => {
+        if (!askPassword && !password) {
+            setAskPassword(true)
+        }
+    }, [askPassword, password, navigate])
 
     useEffect(() => {
         if (lastMessage !== null) {
@@ -138,6 +159,14 @@ export default function PageRoom() {
                     </div>
                 ))}
             </div>
+
+            <ModalRoomPassword
+                isOpen={askPassword}
+                roomId={roomId || '0'}
+                close={() => setAskPassword(false)}
+                cancel={() => navigate('/')}
+                onChange={e => setPassword(e.target.value)}
+            />
 
             {/* <div>
                 <p>The WebSocket is currently <u>{connectionStatus}</u></p>

@@ -3,5 +3,6 @@ CREATE TABLE "room" (
 	"name"			TEXT NOT NULL UNIQUE,
 	"description"	TEXT,
 	"limit"			INTEGER,
+	"password"		TEXT,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );

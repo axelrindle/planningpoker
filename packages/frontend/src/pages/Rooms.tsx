@@ -1,4 +1,4 @@
-import { faPencil, faPlus, faRefresh, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faLock, faPencil, faPlus, faRefresh, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
 import { Item, Menu, Separator, useContextMenu } from 'react-contexify'
@@ -45,7 +45,8 @@ export default function PageRooms() {
     })
     const darkModeActive = useSelector(state => state.config.darkModeActive)
 
-    const { isLoading, error, data: rooms, refetch } = useRooms()
+    const { isError, isLoading, error, data, refetch } = useRooms()
+    const rooms = data ?? []
 
     return (
         <>
@@ -72,10 +73,10 @@ export default function PageRooms() {
                 </div>
             </div>
 
-            {!isLoading && rooms.length === 0 && (
+            {!isError && !isLoading && rooms.length === 0 && (
                 <NoRooms add={() => setOpenModal('create')} />
             )}
-            {!isLoading && rooms.length > 0 && (
+            {!isError && !isLoading && rooms.length > 0 && (
                 <div className="grid grid-cols-4 gap-8 items-start">
                     {rooms.map((room: any) => (
                         <Link
@@ -91,6 +92,12 @@ export default function PageRooms() {
                                 <span>{room.name}</span>
                                 &nbsp;
                                 <span className="text-gray-300">(#{room.id})</span>
+                                &nbsp;
+                                {room.private && (
+                                    <span title="This Room is private">
+                                        <FontAwesomeIcon icon={faLock} />
+                                    </span>
+                                )}
                             </p>
                             {room.description && (
                                 <p className="text-xs">

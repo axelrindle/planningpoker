@@ -5,7 +5,7 @@ import config, { IConfig } from 'config'
 import cors from 'cors'
 import express, { ErrorRequestHandler } from 'express'
 import helmet from 'helmet'
-import { Server } from 'http'
+import { createServer, Server } from 'http'
 import { WebSocketServer } from 'ws'
 import requestLogger from './app/middleware/morgan.mjs'
 import makeUploader from './app/upload.mjs'
@@ -50,7 +50,15 @@ async function loadRoutes() {
     app.use(await loadControllers('app/route/*', { cwd: cwd(import.meta.url) }))
 }
 
-export async function startServer(container: AwilixContainer): Promise<Server> {
+async function listen(host: string, port: number, server: Server): Promise<void> {
+    return new Promise((resolve, reject) => {
+        server.once('listening', () => resolve())
+        server.once('error', () => reject())
+        server.listen(port, host)
+    })
+}
+
+export async function startServer(container: AwilixContainer): Promise<Server[]> {
     app.set('container', container)
 
     registerMiddleware()
@@ -62,18 +70,27 @@ export async function startServer(container: AwilixContainer): Promise<Server> {
     const host = config.get('server.host') as string
     const port = parseInt(config.get('server.port') as string)
 
+    const httpServer = createServer(app)
+    const socketServer = createServer()
+
     // TODO: Expose via /socket
     const wssPort = port + 1
     const wss = new WebSocketServer({
-        port: wssPort
+        noServer: true
     })
-    wss.on('connection', socketHandler(container))
+    socketServer.on('upgrade', socketHandler.onUpgrade(wss))
+    wss.on('connection', socketHandler.onConnection(container))
     app.get('/api/socket', (req, res) => {
         res.json({
             url: req.hostname + ':' + wssPort
         })
     })
-    logger.info('WebSocket Server listening on port ' + wssPort);
 
-    return app.listen(port, host, () => logger.info('Http Server listening on port ' + port))
+    await listen(host, port, httpServer)
+    logger.info('Http Server listening on port ' + port)
+
+    await listen(host, wssPort, socketServer)
+    logger.info('WebSocket Server listening on port ' + wssPort)
+
+    return [httpServer, socketServer]
 }
