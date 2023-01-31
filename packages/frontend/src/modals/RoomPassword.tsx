@@ -1,9 +1,7 @@
 import { faClose, faLockOpen } from '@fortawesome/free-solid-svg-icons';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Props as InputProps } from '../components/form/Input';
 import InputPassword from '../components/form/InputPassword';
 import Modal, { ChildProps } from '../components/Modal';
-import { useSelector } from '../store';
 
 interface Props extends ChildProps {
     roomId: string
