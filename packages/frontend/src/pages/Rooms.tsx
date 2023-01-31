@@ -8,10 +8,34 @@ import ModalCreateRoom from '../modals/CreateRoom'
 import ModalDeleteRoom from '../modals/DeleteRoom'
 import { useRooms } from '../query/room'
 import { useSelector } from '../store'
+import illustrationVoid from '../assets/illustrations/undraw_void_-3-ggu.svg'
 
 const CONTEXT_MENU_ID = 'context-menu-rooms'
 
 type Modal = 'create' | 'delete'
+
+function NoRooms(props: { add: () => void }) {
+    return (
+        <div className="flex flex-col items-center justify-center gap-8">
+            <img
+                src={illustrationVoid}
+                className="w-60"
+                alt="man looking into the void"
+            />
+            <div className="text-center">
+                <p className="font-bold text-lg mb-2">
+                    Seems like there are no rooms ...
+                </p>
+                <p
+                    className="underline cursor-pointer"
+                    onClick={props.add}
+                >
+                    Why not create one?
+                </p>
+            </div>
+        </div>
+    )
+}
 
 export default function PageRooms() {
     const [openModal, setOpenModal] = useState<Modal|null>(null)
@@ -48,14 +72,12 @@ export default function PageRooms() {
                 </div>
             </div>
 
-            {isLoading ? <p>Loading...</p> : (
+            {!isLoading && rooms.length === 0 && (
+                <NoRooms add={() => setOpenModal('create')} />
+            )}
+            {!isLoading && rooms.length > 0 && (
                 <div className="grid grid-cols-4 gap-8 items-start">
-                    {rooms.length === 0 && (
-                        <p>
-                            No Rooms yet!
-                        </p>
-                    )}
-                    {rooms.length > 0 && rooms.map((room: any) => (
+                    {rooms.map((room: any) => (
                         <Link
                             key={room.id}
                             to={`/room/${room.id}`}
