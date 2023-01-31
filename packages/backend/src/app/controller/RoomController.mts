@@ -38,7 +38,7 @@ export default class RoomController {
             return
         }
 
-        room.private = room.password !== undefined
+        room.private = room.password !== null
         delete room.password
 
         res.json(room)
