@@ -56,10 +56,12 @@ export default function PageRoom() {
         }
     }, [room])
     useEffect(() => {
+        if (!room) return
+        if (!room.private) return
         if (!askPassword && !password) {
             setAskPassword(true)
         }
-    }, [askPassword, password, navigate])
+    }, [room, askPassword, password, navigate])
 
     useEffect(() => {
         if (lastMessage !== null) {
