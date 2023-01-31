@@ -6,7 +6,7 @@ import NavItem from './NavItem';
 export default function Navbar() {
     return (
         <div className="w-full h-16 bg-primary text-white drop-shadow-md">
-            <div className="container max-w-screen-xl h-full mx-auto grid grid-cols-3 items-center">
+            <div className="container max-w-screen-xl h-inherit mx-auto grid grid-cols-3 items-center">
                 <div className="flex flex-row gap-4">
                     <NavItem
                         to="/"
