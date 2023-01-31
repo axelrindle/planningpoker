@@ -49,7 +49,7 @@ export default class RoomController {
                 $limit: limit
             })
             await this.game.updateGames()
-            res.json(room)
+            res.end()
         } catch (error: any) {
             console.log(error)
             res.status(500).json({
