@@ -1,16 +1,12 @@
-import { NextFunction, Request, Response } from 'express'
-import Joi from 'joi'
+import { NextFunction, Request, Response } from 'express';
+import { validationResult } from 'express-validator';
 
-export default function validate(schema: Joi.Schema) {
-    return async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            await schema.validateAsync(req.body)
-            next()
-        } catch (error: any) {
-            res.status(400).json({
-                error: error.message,
-                details: error.details
-            })
-        }
+export default function validate(req: Request, res: Response, next: NextFunction) {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        res.status(400).json(errors.array())
+        return
     }
+
+    next()
 }

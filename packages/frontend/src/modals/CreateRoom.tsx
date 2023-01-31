@@ -6,6 +6,7 @@ import Input from '../components/form/Input'
 import Modal, { ChildProps } from '../components/Modal'
 import { useDispatch, useSelector } from '../store'
 import { clearFormData, FormData } from '../store/slices/formData'
+import { FormError } from '../util/error'
 
 const FORMDATA_KEY = 'room_create'
 
@@ -17,15 +18,26 @@ export default function ModalCreateRoom(props: Props) {
     const apiUrl = useSelector(state => state.config.apiUrl)
     const dispatch = useDispatch()
     const queryClient = useQueryClient()
-    const mutation = useMutation<Response, any[], FormData>({
-        mutationFn: data => fetch(new URL('/api/room', apiUrl), {
-            body: JSON.stringify(data),
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
+    const mutation = useMutation<Response, FormError, FormData>({
+        mutationFn: async (data) => {
+            const response = await fetch(new URL('/api/room', apiUrl), {
+                body: JSON.stringify(data),
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            switch (response.status) {
+                case 200:
+                    return response
+                case 400:
+                    const details = await response.json()
+                    throw new FormError(details)
+                default:
+                    throw new Error('Request failed!')
             }
-        }),
-        onSuccess: () => {
+        },
+        onSuccess: (res, _v, _c) => {
             queryClient.invalidateQueries({
                 queryKey: ['rooms']
             })
@@ -35,11 +47,11 @@ export default function ModalCreateRoom(props: Props) {
     })
 
     function getError(key: string): string | undefined {
-        if (!mutation.error) return undefined
-        if (!Array.isArray(mutation.error)) return undefined
+        if (!mutation.error?.details) return undefined
+        if (!Array.isArray(mutation.error?.details)) return undefined
 
-        const detail = mutation.error.find(el => el.context.key === key)
-        return detail.message
+        const detail = mutation.error.details.find(el => el.param === key)
+        return detail?.msg
     }
 
     return (
@@ -78,6 +90,7 @@ export default function ModalCreateRoom(props: Props) {
                     label="Password"
                     help="Leave empty to create a public room."
                     formData={FORMDATA_KEY}
+                    error={getError('password')}
                     contentAfter={(
                         <div
                             className="flex justify-center items-center w-8"
