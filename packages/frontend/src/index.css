@@ -10,6 +10,11 @@ html, body, #root {
     overflow: hidden;
 }
 
+#root {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
 /* Background pattern from https://heropatterns.com */
 body {
     background-color: #ffffff;
