@@ -4,5 +4,6 @@ CREATE TABLE "upload" (
 	"name"	TEXT,
 	"type"	TEXT,
 	"size"	INTEGER,
+	"sub"	TEXT,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );

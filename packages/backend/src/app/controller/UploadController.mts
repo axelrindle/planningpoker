@@ -17,8 +17,10 @@ export default class UploadController {
         const { hash } = req.params
         const info = await this.database.querySingle(`select * from upload where hash = '${hash}'`)
 
-        const file = this.storage.resolve(`uploads/${hash}`)
+        const subPath = info.sub ? info.sub + '/' : ''
+        const file = this.storage.resolve(`uploads/${subPath}${hash}`)
 
-        res.download(file, info.name ?? basename(file))
+        res.header('Content-Type', info.type)
+        res.sendFile(file)
     }
 }
