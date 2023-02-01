@@ -9,6 +9,7 @@ import ModalDeleteRoom from '../modals/DeleteRoom'
 import { useRooms } from '../query/room'
 import { useSelector } from '../store'
 import illustrationVoid from '../assets/illustrations/undraw_void_-3-ggu.svg'
+import Header from '../components/Header'
 
 const CONTEXT_MENU_ID = 'context-menu-rooms'
 
@@ -50,28 +51,23 @@ export default function PageRooms() {
 
     return (
         <>
-            <div className="grid grid-cols-header items-center pb-4 mb-8 border-b-2 border-black dark:border-gray-300">
-                <div>
-                    <p className="font-bold text-lg">
-                        Rooms
-                    </p>
-                    <p>Select a Room to join down below.</p>
-                </div>
-                <div className="flex flex-row gap-4">
-                    <Button
-                        label="Refresh"
-                        icon={faRefresh}
-                        onClick={() => refetch()}
-                        hideLabel
-                        disabled={isLoading}
-                    />
-                    <Button
-                        label="Add"
-                        icon={faPlus}
-                        onClick={() => setOpenModal('create')}
-                    />
-                </div>
-            </div>
+            <Header
+                title="Rooms"
+                subtitle="Select a Room to join down below."
+            >
+                <Button
+                    label="Refresh"
+                    icon={faRefresh}
+                    onClick={() => refetch()}
+                    hideLabel
+                    disabled={isLoading}
+                />
+                <Button
+                    label="Add"
+                    icon={faPlus}
+                    onClick={() => setOpenModal('create')}
+                />
+            </Header>
 
             {!isError && !isLoading && rooms.length === 0 && (
                 <NoRooms add={() => setOpenModal('create')} />
