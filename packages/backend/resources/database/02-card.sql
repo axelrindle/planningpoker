@@ -2,6 +2,7 @@ CREATE TABLE "card" (
 	"id"	INTEGER,
 	"name"	TEXT NOT NULL UNIQUE,
 	"value"	INTEGER NOT NULL,
+	"image" TEXT,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
 

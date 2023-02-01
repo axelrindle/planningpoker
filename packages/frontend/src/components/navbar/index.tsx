@@ -1,7 +1,7 @@
-import { faHome, faUpload } from '@fortawesome/free-solid-svg-icons';
-import icon from '../../assets/icon.svg';
-import NightModeSwitch from '../NightModeSwitch';
-import NavItem from './NavItem';
+import { faHome, faScroll, faUpload } from '@fortawesome/free-solid-svg-icons'
+import icon from '../../assets/icon.svg'
+import NightModeSwitch from '../NightModeSwitch'
+import NavItem from './NavItem'
 
 export default function Navbar() {
     return (
@@ -12,6 +12,11 @@ export default function Navbar() {
                         to="/"
                         icon={faHome}
                         label="Home"
+                    />
+                    <NavItem
+                        to="/card"
+                        icon={faScroll}
+                        label="Cards"
                     />
                     <NavItem
                         to="/upload"

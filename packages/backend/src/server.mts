@@ -64,7 +64,7 @@ export async function startServer(container: AwilixContainer): Promise<Server[]>
     registerMiddleware()
     await loadRoutes()
 
-    app.use('/upload', makeUploader(container))
+    app.use('/upload/card', await makeUploader(container, 'card'))
 
     const config = container.resolve('config') as IConfig
     const host = config.get('server.host') as string

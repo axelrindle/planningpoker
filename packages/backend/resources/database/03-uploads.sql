@@ -7,3 +7,5 @@ CREATE TABLE "upload" (
 	"sub"	TEXT,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );
+
+-- TODO: Make card.image reference upload.hash
