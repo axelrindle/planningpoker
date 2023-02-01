@@ -3,9 +3,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Input from '../components/form/Input'
 import InputPassword from '../components/form/InputPassword'
 import Modal, { ChildProps } from '../components/Modal'
+import { createRoom } from '../query/room'
 import { useDispatch, useSelector } from '../store'
 import { clearFormData, FormData } from '../store/slices/formData'
-import { FormError } from '../util/error'
+import { FormError, getError } from '../util/error'
 
 const FORMDATA_KEY = 'room_create'
 
@@ -17,25 +18,8 @@ export default function ModalCreateRoom(props: Props) {
     const dispatch = useDispatch()
     const queryClient = useQueryClient()
     const mutation = useMutation<Response, FormError, FormData>({
-        mutationFn: async (data) => {
-            const response = await fetch(new URL('/api/room', apiUrl), {
-                body: JSON.stringify(data),
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            switch (response.status) {
-                case 200:
-                    return response
-                case 400:
-                    const details = await response.json()
-                    throw new FormError(details)
-                default:
-                    throw new Error('Request failed!')
-            }
-        },
-        onSuccess: (res, _v, _c) => {
+        mutationFn: createRoom(apiUrl),
+        onSuccess: (_res, _v, _c) => {
             queryClient.invalidateQueries({
                 queryKey: ['rooms']
             })
@@ -43,14 +27,6 @@ export default function ModalCreateRoom(props: Props) {
             dispatch(clearFormData(FORMDATA_KEY))
         }
     })
-
-    function getError(key: string): string | undefined {
-        if (!mutation.error?.details) return undefined
-        if (!Array.isArray(mutation.error?.details)) return undefined
-
-        const detail = mutation.error.details.find(el => el.param === key)
-        return detail?.msg
-    }
 
     return (
         <Modal
@@ -79,7 +55,7 @@ export default function ModalCreateRoom(props: Props) {
                     label="Name"
                     placeholder="My awesome room"
                     formData={FORMDATA_KEY}
-                    error={getError('name')}
+                    error={getError(mutation, 'name')}
                 />
 
                 <Input
@@ -88,7 +64,7 @@ export default function ModalCreateRoom(props: Props) {
                     label="Limit"
                     formData={FORMDATA_KEY}
                     help="Limit the user count of a Room. Set to 0 to disable."
-                    error={getError('limit')}
+                    error={getError(mutation, 'limit')}
                     min={2}
                 />
 
@@ -98,7 +74,7 @@ export default function ModalCreateRoom(props: Props) {
                     label="Description"
                     placeholder="My awesome room is so awesome"
                     formData={FORMDATA_KEY}
-                    error={getError('description')}
+                    error={getError(mutation, 'description')}
                     containerClassName="col-span-2"
                 />
 
@@ -107,7 +83,7 @@ export default function ModalCreateRoom(props: Props) {
                     label="Password"
                     help="Leave empty to create a public room."
                     formData={FORMDATA_KEY}
-                    error={getError('password')}
+                    error={getError(mutation, 'password')}
                 />
             </div>
         </Modal>
