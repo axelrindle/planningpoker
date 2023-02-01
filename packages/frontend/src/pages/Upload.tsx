@@ -23,7 +23,7 @@ export default function PageUpload() {
         setHasFile(true)
 
         setUpload(file, {
-            endpoint: `${apiUrl}/upload`,
+            endpoint: `${apiUrl}/upload/card`,
             metadata: {
                 filename: file.name,
                 filetype: file.type,
