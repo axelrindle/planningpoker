@@ -57,9 +57,14 @@ export default function PageCards() {
                     ))}
                 </div>
             )}
-            {rooms.length === 0 && (
+            {!isError && rooms.length === 0 && (
                 <p>
                     No Cards
+                </p>
+            )}
+            {isError && (
+                <p className="font-bold text-red-500">
+                    {error.message}
                 </p>
             )}
 
