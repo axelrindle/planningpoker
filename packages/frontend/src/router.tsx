@@ -3,7 +3,6 @@ import LayoutMain from './layouts/LayoutMain'
 import PageCards from './pages/Cards'
 import PageRoom from './pages/Room'
 import PageRooms from './pages/Rooms'
-import PageUpload from './pages/Upload'
 
 const router = createBrowserRouter([
     {
@@ -22,10 +21,6 @@ const router = createBrowserRouter([
                 path:'/card',
                 element: <PageCards />
             },
-            {
-                path: '/upload',
-                element: <PageUpload />
-            }
         ]
     }
 ])

@@ -1,4 +1,4 @@
-import { faHome, faScroll, faUpload } from '@fortawesome/free-solid-svg-icons'
+import { faHome, faScroll } from '@fortawesome/free-solid-svg-icons'
 import icon from '../../assets/icon.svg'
 import NightModeSwitch from '../NightModeSwitch'
 import NavItem from './NavItem'
@@ -17,11 +17,6 @@ export default function Navbar() {
                         to="/card"
                         icon={faScroll}
                         label="Cards"
-                    />
-                    <NavItem
-                        to="/upload"
-                        icon={faUpload}
-                        label="Upload"
                     />
                 </div>
                 <div className="flex flex-row justify-center items-center gap-4">
