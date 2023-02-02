@@ -54,7 +54,7 @@ export default function ModalCreateCard(props: Props) {
 
     const [activeStep, setActiveStep] = useState(0)
 
-    const { upload, setUpload, isSuccess, error } = useTus()
+    const { upload, setUpload, error } = useTus()
     const [hasFile, setHasFile] = useState(false)
     const [progress, setProgress] = useState(0)
 

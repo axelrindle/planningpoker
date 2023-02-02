@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import { basename } from 'path'
 import DatabaseService from '../../service/database.mjs'
 import StorageService from '../../service/storage.mjs'
 
