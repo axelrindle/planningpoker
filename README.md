@@ -1,4 +1,4 @@
-![logo](./art/icon/web/icon-192.png)
+<img src="./art/icon/web/icon-192.png" alt="icon" align="right" />
 
 # Planning Poker
 
