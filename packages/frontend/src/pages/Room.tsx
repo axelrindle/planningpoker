@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
+import Header from '../components/Header'
 import ModalRoomPassword from '../modals/RoomPassword'
 import { useCards } from '../query/card'
 import { useRoom } from '../query/room'
@@ -111,36 +112,28 @@ export default function PageRoom() {
 
     return (
         <>
-            <div className="flex flex-row">
-                <div className="flex-1">
-                    <p className="font-bold text-lg">
-                        {room.name}
+            <Header
+                title={room.name}
+                subtitle={room.description}
+            >
+                <div>
+                    <p>
+                        Connection: <u>{connectionStatus}</u>
                     </p>
-                    <p className="text-sm">
-                        {room.description}
+                    <p>
+                        You are: <u>{userId}</u>
                     </p>
                 </div>
-                <div className="flex flex-row items-center gap-8">
-                    <div>
-                        <p>
-                            Connection: <u>{connectionStatus}</u>
-                        </p>
-                        <p>
-                            You are: <u>{userId}</u>
-                        </p>
-                    </div>
-                    <Link
-                        to="/"
-                        className="bg-primary text-white px-8 py-4 rounded"
-                    >
-                        <FontAwesomeIcon icon={faRightFromBracket} />
-                        <span className="ml-2">
-                            Leave
-                        </span>
-                    </Link>
-                </div>
-            </div>
-            <hr className="my-4" />
+                <Link
+                    to="/"
+                    className="bg-primary text-white px-8 py-4 rounded"
+                >
+                    <FontAwesomeIcon icon={faRightFromBracket} />
+                    <span className="ml-2">
+                        Leave
+                    </span>
+                </Link>
+            </Header>
 
             <div className="mb-8 flex flex-row gap-4">
                 {users.map((user, index) => (
