@@ -1,11 +1,10 @@
-import { faCheck, faChessRook, faClose, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faClose, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
-import Button from '../components/Button'
-import Input from '../components/form/Input'
 import ModalRoomPassword from '../modals/RoomPassword'
+import { useCards } from '../query/card'
 import { useRoom } from '../query/room'
 import { useSelector } from '../store'
 
@@ -37,16 +36,27 @@ export default function PageRoom() {
     const [userId, setUserId] = useState<string>('')
     const [users, setUsers] = useState<any[]>([])
 
-    const [card, setCard] = useState('')
+    const apiUrl = useSelector(state => state.config.apiUrl)
+    const { data: _cards } = useCards()
+    const cards = _cards ?? []
 
-    function select() {
+    const [selectedCard, setCard] = useState('')
+
+    function select(card: any) {
+        setCard(card.id)
         sendMessage(JSON.stringify({
             userId,
             event: 'SELECT',
             data: {
-                cardId: card
+                cardId: card.value
             }
         }))
+    }
+    function deselect() {
+        select({
+            id: -1,
+            value: undefined
+        })
     }
 
     useEffect(() => {
@@ -131,20 +141,6 @@ export default function PageRoom() {
                 </div>
             </div>
             <hr className="my-4" />
-            <Input
-                type="number"
-                name="card"
-                label="Card"
-                min={0}
-                onChange={e => setCard(e.target.value)}
-            />
-            <div className="flex flex-row items-start gap-4 my-8">
-                <Button
-                    label="Select"
-                    icon={faChessRook}
-                    onClick={() => select()}
-                />
-            </div>
 
             <div className="mb-8 flex flex-row gap-4">
                 {users.map((user, index) => (
@@ -152,13 +148,35 @@ export default function PageRoom() {
                         <p>
                             {user.name}
                         </p>
-                        {user.card && (
+                        {user.card !== undefined && (
                             <p>
                                 Card: {user.card}
                             </p>
                         )}
                         <FontAwesomeIcon icon={user.chosen ? faCheck : faClose} />
                     </div>
+                ))}
+            </div>
+
+            <div className="flex flex-row gap-4">
+                {cards.map(card => (
+                    <img
+                        key={card.id}
+                        src={`${apiUrl}/uploads/${card.image}`}
+                        alt={`Card Icon for ${card.name}`}
+                        crossOrigin="anonymous"
+                        className={`
+                            w-16 cursor-pointer transition-transform
+                            ${selectedCard === card.id ? '-translate-y-2' : 'hover:-translate-y-2'}
+                        `}
+                        onClick={() => {
+                            if (selectedCard === card.id) {
+                                deselect()
+                            } else {
+                                select(card)
+                            }
+                        }}
+                    />
                 ))}
             </div>
 

@@ -154,7 +154,7 @@ function onConnection(container: AwilixContainer) {
                     case 'SELECT':
                         // eslint-disable-next-line no-case-declarations
                         const user = gameManager.findUser(uuid)!
-                        user.card = theData.data.cardId || undefined
+                        user.card = theData.data.cardId
                         sendUpdate()
                         break
                     default:

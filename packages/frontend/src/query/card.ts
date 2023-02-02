@@ -5,7 +5,7 @@ import { FormError } from '../util/error'
 
 export function useCards() {
     const apiUrl = useSelector(state => state.config.apiUrl)
-    return useQuery<any, any>({
+    return useQuery<any[], any>({
         queryKey: ['cards'],
         queryFn: () => fetch(`${apiUrl}/api/card`).then(response => response.json())
     })
