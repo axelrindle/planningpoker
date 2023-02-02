@@ -21,15 +21,15 @@ export default async function makeUploader(container: AwilixContainer, subDirect
         }),
         path: '/',
         async onUploadFinish(_req, res, upload) {
-            await database.execute(`
-                insert into upload values (
-                    null,
-                    '${upload.id}',
-                    '${upload.metadata?.['filename']}',
-                    '${upload.metadata?.['filetype']}',
-                    ${upload.size},
-                    ${subDirectory ? '\'' + subDirectory + '\'' : null}
-                )`
+            await database.run(
+                'insert into upload values (null, $id, $name, $type, $size, $dir)',
+                {
+                    $id: upload.id,
+                    $name: upload.metadata?.['filename'],
+                    $type: upload.metadata?.['filetype'],
+                    $size: upload.size,
+                    $dir: subDirectory
+                }
             )
             return res
         },

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MouseEventHandler } from 'react'
 
 interface Props {
-    label?: string
+    label?: string | (() => string)
     icon?: IconProp
     onClick?: MouseEventHandler
     hideLabel?: boolean
@@ -11,6 +11,7 @@ interface Props {
 }
 
 export default function Button(props: Props) {
+    const label = typeof props.label === 'function' ? props.label() : props.label
     return (
         <button
             className="
@@ -29,13 +30,13 @@ export default function Button(props: Props) {
                     props.onClick?.(event)
                 }
             }}
-            title={props.label}
+            title={label}
             disabled={props.disabled}
         >
             {props.icon && <FontAwesomeIcon icon={props.icon} />}
             {!props.hideLabel && props.label && (
                 <span className="ml-2">
-                    {props.label}
+                    {label}
                 </span>
             )}
         </button>

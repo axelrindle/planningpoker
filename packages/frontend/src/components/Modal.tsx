@@ -10,9 +10,10 @@ import Content from './Content';
 const container = document.getElementById('modals') as HTMLElement
 
 interface Action {
-    label: string
+    label: string | (() => string)
     handle: () => void
     icon: IconProp
+    disabled?: boolean
 }
 
 interface Props {
@@ -37,7 +38,9 @@ export default function Modal(props: Props) {
 
         switch (event.code) {
             case 'Escape':
-                props.close()
+                if (!props.disableClose) {
+                    props.close()
+                }
                 break;
             default:
                 break;
@@ -96,6 +99,7 @@ export default function Modal(props: Props) {
                                 label={action.label}
                                 onClick={action.handle}
                                 icon={action.icon}
+                                disabled={action.disabled}
                             />
                         ))}
                     </div>

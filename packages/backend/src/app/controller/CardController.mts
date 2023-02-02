@@ -36,7 +36,9 @@ export default class CardController {
                 $name: name,
                 $value: value
             })
-            res.end()
+
+            const id = await this.database.querySingle('select id from card where name = ?', [name])
+            res.json(id)
         } catch (error: any) {
             console.log(error)
             res.status(500).json({
