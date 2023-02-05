@@ -8,7 +8,6 @@ services:
       - 3000:3000
       - 3001:3001
     volumes:
-      - ./config:/config
       - backend_data:/data
 
   frontend:
