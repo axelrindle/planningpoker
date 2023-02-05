@@ -13,6 +13,7 @@ export default function PageRoom() {
     const navigate = useNavigate()
     const { roomId } = useParams()
     const socketUrl = useSelector(state => state.config.socketUrl)
+    const username = useSelector(state => state.config.username)
 
     const { isLoading, error, data: room } = useRoom(roomId as string)
 
@@ -22,7 +23,7 @@ export default function PageRoom() {
     // TODO: Authentication using Header not working with browser WebSocket API yet
     // See https://github.com/whatwg/websockets/issues/16
     const { sendMessage, lastMessage, readyState } = useWebSocket(
-        `${socketUrl}?room=${roomId}`,
+        `${socketUrl}?room=${roomId}&username=${username || ''}`,
         {},
         room !== undefined && (!room.private || password !== '')
     )
@@ -93,6 +94,14 @@ export default function PageRoom() {
             }
         }
     }, [lastMessage, navigate])
+
+    useEffect(() => {
+        sendMessage(JSON.stringify({
+            userId,
+            event: 'SELECT',
+            data: { username }
+        }))
+    }, [sendMessage, userId, username])
 
     if (isLoading) {
         return (

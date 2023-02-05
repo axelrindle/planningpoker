@@ -5,6 +5,7 @@ interface ConfigState {
     apiUrl: string
     socketUrl: string
     darkModeActive: boolean
+    username?: string
 }
 
 interface PayloadData {
@@ -24,16 +25,21 @@ export const configSlice = createSlice<ConfigState, SliceCaseReducers<ConfigStat
     initialState: {
         apiUrl: `${apiUrl.protocol}//${apiUrl.host}`,
         socketUrl: `ws://${socketUrl.host}`,
-        darkModeActive
+        darkModeActive,
+        username: localStorage.getItem('username') || undefined
     },
     reducers: {
         setConfigValue: (state, action: PayloadAction<PayloadData>) => {
             //@ts-ignore
             state[action.payload.key] = action.payload.value
+        },
+        setUsername: (state, action: PayloadAction<string>) => {
+            state.username = action.payload
+            localStorage.setItem('username', action.payload)
         }
     }
 })
 
-export const { setConfigValue } = configSlice.actions
+export const { setConfigValue, setUsername } = configSlice.actions
 
 export default configSlice.reducer

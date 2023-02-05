@@ -98,17 +98,18 @@ export default class GameService extends Service {
         return undefined
     }
 
-    join(room: Room, user: string, socket: WebSocket) {
+    join(room: Room, id: string, socket: WebSocket): User {
         const game = this.findGameByRoom(room)
         if (!game) {
             throw new Error('No game found?!')
         }
 
-        game.users.push({
-            id: user,
+        const user: User = {
+            id, socket,
             name: 'Player ' + (game.users.length + 1),
-            socket,
-        })
+        }
+        game.users.push(user)
+        return user
     }
 
     quit(room: Room, user: string) {

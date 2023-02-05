@@ -113,7 +113,10 @@ function onConnection(container: AwilixContainer) {
 
         // assign user id
         const uuid = findUuid()
-        gameManager.join(room, uuid, socket)
+        const user = gameManager.join(room, uuid, socket)
+        if (url.query['username']) {
+            user.name = url.query['username'] as string
+        }
         sendMessage(socket, {
             event: 'HELLO',
             data: {
@@ -150,11 +153,15 @@ function onConnection(container: AwilixContainer) {
                     return
                 }
 
+                const user = gameManager.findUser(uuid)!
                 switch (theData.event) {
                     case 'SELECT':
                         // eslint-disable-next-line no-case-declarations
-                        const user = gameManager.findUser(uuid)!
                         user.card = theData.data.cardId
+                        sendUpdate()
+                        break
+                    case 'RENAME':
+                        user.name = theData.data.username
                         sendUpdate()
                         break
                     default:

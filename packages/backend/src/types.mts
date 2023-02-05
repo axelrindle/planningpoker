@@ -26,7 +26,7 @@ export interface Room {
     password?: string
 }
 
-export type Event = 'HELLO' | 'UPDATE' | 'SELECT' | 'DELETE'
+export type Event = 'HELLO' | 'UPDATE' | 'SELECT' | 'RENAME' | 'DELETE'
 
 export interface Message {
     userId?: string

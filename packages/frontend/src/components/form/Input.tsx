@@ -15,6 +15,7 @@ export interface Props {
     contentAfter?: ReactNode
     containerClassName?: string
     onChange?: ChangeEventHandler<HTMLInputElement>
+    defaultValue?: string
 }
 
 function useInitialValue(root: string, key: string) {
@@ -55,7 +56,7 @@ export default function Input(props: Props) {
                         border-2 border-violet-200 rounded
                     "
                     placeholder={props.placeholder}
-                    defaultValue={props.formData ? _initialValue : undefined}
+                    defaultValue={props.formData ? _initialValue : props.defaultValue}
                     onChange={props.formData ? _setFormData : props.onChange}
                     min={props.min}
                     max={props.max}
