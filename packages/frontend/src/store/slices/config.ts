@@ -3,7 +3,6 @@ import env from '../../util/env'
 
 interface ConfigState {
     apiUrl: string
-    socketUrl: string
     darkModeActive: boolean
     username?: string
 }
@@ -15,16 +14,12 @@ interface PayloadData {
 
 //@ts-ignore
 const apiUrl = new URL(env('REACT_APP_API_URL'))
-const socketUrl = new URL(apiUrl)
-socketUrl.port = '' + (parseInt(socketUrl.port) + 1)
-
 const darkModeActive = localStorage.getItem('darkModeActive') === 'true'
 
 export const configSlice = createSlice<ConfigState, SliceCaseReducers<ConfigState>>({
     name: 'config',
     initialState: {
         apiUrl: `${apiUrl.protocol}//${apiUrl.host}`,
-        socketUrl: `ws://${socketUrl.host}`,
         darkModeActive,
         username: localStorage.getItem('username') || undefined
     },

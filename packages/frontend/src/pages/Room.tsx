@@ -1,5 +1,6 @@
 import { faCheck, faClose, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
@@ -7,13 +8,15 @@ import Header from '../components/Header'
 import ModalRoomPassword from '../modals/RoomPassword'
 import { useCards } from '../query/card'
 import { useRoom } from '../query/room'
+import { useSocketUrl } from '../query/socket'
 import { useSelector } from '../store'
 
 export default function PageRoom() {
     const navigate = useNavigate()
     const { roomId } = useParams()
-    const socketUrl = useSelector(state => state.config.socketUrl)
     const username = useSelector(state => state.config.username)
+
+    const socketUrl = useSocketUrl()
 
     const { isLoading, error, data: room } = useRoom(roomId as string)
 
@@ -23,9 +26,9 @@ export default function PageRoom() {
     // TODO: Authentication using Header not working with browser WebSocket API yet
     // See https://github.com/whatwg/websockets/issues/16
     const { sendMessage, lastMessage, readyState } = useWebSocket(
-        `${socketUrl}?room=${roomId}&username=${username || ''}`,
+        `ws://${socketUrl.data?.url}?room=${roomId}&username=${username || ''}`,
         {},
-        room !== undefined && (!room.private || password !== '')
+        room !== undefined && (!room.private || password !== '') && !socketUrl.isError
     )
     const connectionStatus = {
         [ReadyState.CONNECTING]: 'Connecting',

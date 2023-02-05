@@ -5,7 +5,8 @@
 
     "server": {
         "host": "PP_SERVER_HOST",
-        "port": "PP_SERVER_PORT"
+        "port": "PP_SERVER_PORT",
+        "socketPort": "PP_SERVER_PORT_WEBSOCKET"
     },
 
     "logging": {

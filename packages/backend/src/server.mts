@@ -6,6 +6,7 @@ import cors from 'cors'
 import express, { ErrorRequestHandler } from 'express'
 import helmet from 'helmet'
 import { createServer, Server } from 'http'
+import { createProxyMiddleware } from 'http-proxy-middleware'
 import { WebSocketServer } from 'ws'
 import requestLogger from './app/middleware/morgan.mjs'
 import makeUploader from './app/upload.mjs'
@@ -69,20 +70,29 @@ export async function startServer(container: AwilixContainer): Promise<Server[]>
     const config = container.resolve('config') as IConfig
     const host = config.get('server.host') as string
     const port = parseInt(config.get('server.port') as string)
+    const wssPort = parseInt(config.get('server.socketPort') as string)
 
     const httpServer = createServer(app)
     const socketServer = createServer()
 
     // TODO: Expose via /socket
-    const wssPort = port + 1
     const wss = new WebSocketServer({
         noServer: true
     })
     socketServer.on('upgrade', socketHandler.onUpgrade(wss))
     wss.on('connection', socketHandler.onConnection(container))
+    app.use('/socket', createProxyMiddleware({
+        target: `http://localhost:${wssPort}`,
+        changeOrigin: true,
+        pathRewrite: {
+            '^/socket': ''
+        },
+        ws: true,
+        logProvider: () => logger
+    }))
     app.get('/api/socket', (req, res) => {
         res.json({
-            url: req.hostname + ':' + wssPort
+            url: req.hostname + ':' + port + '/socket'
         })
     })
 
