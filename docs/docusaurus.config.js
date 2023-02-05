@@ -31,7 +31,7 @@ const config = {
             ({
                 docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
-                    editUrl: 'https://github.com/axelrindle/planningpoker/tree/main/docs/docs',
+                    editUrl: 'https://github.com/axelrindle/planningpoker/tree/main/docs',
                     showLastUpdateTime: true
                 },
                 theme: {
