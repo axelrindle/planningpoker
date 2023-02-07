@@ -4,6 +4,7 @@
 
 [![CI](https://github.com/axelrindle/planningpoker/actions/workflows/ci.yml/badge.svg)](https://github.com/axelrindle/planningpoker/actions/workflows/ci.yml)
 [![Docs](https://github.com/axelrindle/planningpoker/actions/workflows/docs.yml/badge.svg)](https://github.com/axelrindle/planningpoker/actions/workflows/docs.yml)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/8796e479719445a2bc7de81c1b50c6c5)](https://www.codacy.com/gh/axelrindle/planningpoker/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=axelrindle/planningpoker&amp;utm_campaign=Badge_Grade)
 
 > Planning Poker application intended to be selfhosted.
 
