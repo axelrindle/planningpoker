@@ -64,7 +64,9 @@ const logger = createLogger({
     },
     level: config.has('logging.level') ? config.get('logging.level') : 'info',
     transports: [
-        new transports.Console(),
+        new transports.Console({
+            silent: process.env['NODE_ENV'] === 'test'
+        }),
         /*new transports.File({
             filename: config.get('logging.wog.file'),
             format: combine(baseFormat(), format.uncolorize())
