@@ -1,6 +1,7 @@
 import { createTerminus } from '@godaddy/terminus'
 import { readFile } from 'fs/promises'
 import startContainer from './container.mjs'
+import { makeLogger } from './logger.mjs'
 import { startServer } from './server.mjs'
 
 if (! process.env['DISABLE_BANNER']) {
@@ -8,6 +9,7 @@ if (! process.env['DISABLE_BANNER']) {
     process.stdout.write(banner)
 }
 
+const logger = makeLogger('main')
 const container = await startContainer()
 const [http, websocket] = await startServer(container)
 
@@ -15,6 +17,8 @@ createTerminus(http, {
     signals: ['SIGINT', 'SIGTERM'],
     onSignal: async () => {
         process.stdout.write('\n') // insert newline after escape sequence
+
+    logger.info('Shutdown requested...')
         try {
             await new Promise<void>((resolve, reject) => {
                 websocket?.close(err => {
@@ -23,10 +27,9 @@ createTerminus(http, {
                 })
             })
             await container.dispose()
-            console.log('Disposed. Goodbye :)')
-            process.exit(0)
+        logger.info('Disposed. Goodbye :)')
         } catch (error) {
-            console.error(error)
+        logger.error('Something went horribly wrong!', error)
             process.exit(1)
         }
     }

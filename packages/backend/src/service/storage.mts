@@ -79,7 +79,7 @@ export default class StorageService extends Service {
     private async ensureDirectory() {
         if (! await this.isDirectory(this.directory)) {
             await mkdirp(this.directory)
-            console.log('Created data directory.')
+            this.logger.info('Created data directory.')
         }
     }
 }
