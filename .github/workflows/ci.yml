@@ -88,7 +88,7 @@ jobs:
           ${{ runner.os }}-node-
     - run: npm ci
       if: steps.cache-node.outputs.cache-hit != 'true'
-    - run: npm run test
+    - run: npx lerna run test --scope ${{ matrix.package }}
     - name: Run codacy-coverage-reporter
       uses: codacy/codacy-coverage-reporter-action@v1
       with:
