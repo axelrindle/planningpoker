@@ -18,7 +18,7 @@ test.before('start server', async (t) => {
 
     t.context.serverPort = await getPort()
     t.context.socketPort = await getPort()
-    t.context.apiUrl = `http://localhost:${t.context.serverPort}/api`
+    t.context.apiUrl = `http://127.0.0.1:${t.context.serverPort}/api`
 
     const runId = randomBytes(8).toString('hex')
     t.context.dataDirectory = `/tmp/planningpoker-test-${runId}`
