@@ -52,8 +52,12 @@ export default class RoomController {
                 $limit: limit,
                 $password: passwordEncrypted
             })
+            const id = await this.database.querySingle('select id from room where name = ?', [name])
             await this.game.updateGames()
-            res.end()
+            res
+                .header('Location', '/api/room/' + id)
+                .status(201)
+                .end()
         } catch (error: any) {
             console.log(error)
             res.status(500).json({
