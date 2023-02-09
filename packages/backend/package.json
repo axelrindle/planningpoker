@@ -10,7 +10,7 @@
     "start": "NODE_ENV=development tsx src/index.mts",
     "watch": "NODE_ENV=development nodemon",
     "build": "tsc",
-    "test": "node ./__tests__/backend.test.js",
+    "test": "c8 ava",
     "clean": "rm -rf build"
   },
   "devDependencies": {
@@ -23,7 +23,11 @@
     "@types/glob": "^8.0.0",
     "@types/morgan": "^1.9.4",
     "@types/ws": "^8.5.4",
+    "ava": "^5.2.0",
+    "c8": "^7.12.0",
+    "get-port": "^6.1.2",
     "nodemon": "^2.0.20",
+    "rimraf": "^4.1.2",
     "tsx": "^3.12.2"
   },
   "dependencies": {
@@ -52,5 +56,17 @@
     "utf-8-validate": "^5.0.10",
     "winston": "^3.8.2",
     "ws": "^8.12.0"
+  },
+  "ava": {
+    "extensions": {
+      "ts": "module",
+      "mts": "module"
+    },
+    "nodeArguments": [
+      "--loader=tsx"
+    ],
+    "files": [
+      "test/cases/**/*"
+    ]
   }
 }

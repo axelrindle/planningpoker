@@ -37,3 +37,5 @@ export interface Message {
 export interface Request extends ExpressRequest {
     readonly container: AwilixContainer
 }
+
+export type ShutdownFunction = (customHook?: () => Promise<void>) => Promise<void>
