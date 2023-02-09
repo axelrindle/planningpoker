@@ -28,16 +28,9 @@ export default class RoomController {
     }
 
     async read(req: Request, res: Response) {
-        const roomId = req.params['roomId']
-        const room = await this.database.querySingle('select * from room where id = ' + roomId)
+        const room = Object.assign({}, req.room)
 
-        if (!room) {
-            res.status(404).json({
-                error: `No room found with ID ${roomId}!`
-            })
-            return
-        }
-
+        //@ts-ignore
         room.private = room.password !== null
         delete room.password
 
@@ -70,19 +63,9 @@ export default class RoomController {
     }
 
     async delete(req: Request, res: Response) {
-        const roomId = req.params['roomId']
-        const room = await this.database.querySingle('select * from room where id = ' + roomId)
-
-        if (!room) {
-            res.status(404).json({
-                error: `No room found with ID ${roomId}!`
-            })
-            return
-        }
-
         try {
-            this.game.delete(room)
-            await this.database.execute('delete from room where id = ' + roomId)
+            this.game.delete(req.room)
+            await this.database.execute('delete from room where id = ' + req.room.id)
             res.end()
         } catch (error: any) {
             const message = error.message ?? error ?? 'Unknown error!'
