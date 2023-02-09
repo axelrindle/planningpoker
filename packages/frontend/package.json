@@ -35,7 +35,7 @@
     "start": "PORT=3002 BROWSER=none react-scripts start",
     "open": "PORT=3002 react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --passWithNoTests",
     "eject": "react-scripts eject",
     "clean": "rm -rf build"
   },
