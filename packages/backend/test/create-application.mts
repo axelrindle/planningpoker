@@ -28,16 +28,4 @@ test.before('start server', async (t) => {
 
 test.after.always(t => t.context.shutdown(() => rimraf(process.env['NODE_TEST_DATA_DIRECTORY'] as string)))
 
-const apiUrl = `http://localhost:${process.env['NODE_TEST_SERVER_PORT']}/api`
-test('hello world', async (t) => {
-    try {
-        const response = await fetch(apiUrl + '/room', {
-            method: 'GET'
-        })
-        const body = await response.json()
-        t.true(Array.isArray(body))
-    } catch (error) {
-        t.log(error)
-        t.fail(error.message)
-    }
-})
+export default test

@@ -64,6 +64,9 @@
     },
     "nodeArguments": [
       "--loader=tsx"
+    ],
+    "files": [
+      "test/cases/**/*"
     ]
   }
 }
