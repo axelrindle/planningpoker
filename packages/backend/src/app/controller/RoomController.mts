@@ -5,6 +5,12 @@ import DatabaseService from '../../service/database.mjs'
 import GameService from '../../service/game.mjs'
 import { hash } from '../../util/hash.mjs'
 
+interface SqlSet {
+    sql: string
+    key: string
+    value?: unknown
+}
+
 export default class RoomController {
 
     private logger: Logger
@@ -58,6 +64,58 @@ export default class RoomController {
                 .header('Location', '/api/room/' + id)
                 .status(201)
                 .end()
+        } catch (error: any) {
+            console.log(error)
+            res.status(500).json({
+                error: error.message
+            })
+        }
+    }
+
+    async update(req: Request, res: Response) {
+        const { name, description, limit, password } = req.body
+
+        let passwordEncrypted: string|null = null
+        if (password) {
+            passwordEncrypted = await hash(password)
+        }
+
+        const updates: Record<string, string|null|undefined> = {
+            name, description, limit, password: passwordEncrypted
+        }
+
+        const sets: SqlSet[] = Object.keys(updates)
+            .map(key => {
+                if (updates[key] === undefined) return undefined
+                else if (updates[key] === null) return {
+                    sql: `\`${key}\` = NULL`,
+                    key,
+                }
+                else return {
+                    sql: `\`${key}\` = $${key}`,
+                    key,
+                    value: updates[key]
+                }
+            })
+            .filter(val => val !== undefined)
+
+        if (sets.length === 0) {
+            res.end()
+            return
+        }
+
+        const sql = `
+        UPDATE room
+        SET ${sets.map(el => el.sql).join(',\n')}
+        WHERE id = ${req.room.id}
+        `
+
+        try {
+            const params = sets
+                .filter(el => el.value !== undefined)
+                .reduce((prev, cur) => ({ ...prev, ['$' + cur.key]: cur.value }), {})
+            await this.database.run(sql, params)
+            res.end()
         } catch (error: any) {
             console.log(error)
             res.status(500).json({
