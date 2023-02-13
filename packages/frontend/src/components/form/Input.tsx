@@ -22,7 +22,7 @@ export interface Props {
 
 export function useFormDataKey(): string {
     const context = useForm()
-    return context.key ?? 'DUMMY'
+    return context?.key ?? 'DUMMY'
 }
 
 function useInitialValue(root: string, props: Props) {
@@ -52,7 +52,7 @@ export default function Input(props: Props) {
 
     const dispatch = useDispatch()
     const initialValue = useInitialValue(formDataKey, props)
-    const error = context.mutation ? getError(context.mutation, props.name) : props.error
+    const error = context?.mutation ? getError(context.mutation, props.name) : props.error
 
     const [value, setValue] = useState(initialValue)
 
