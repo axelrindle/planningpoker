@@ -94,8 +94,16 @@ export default function Input(props: Props) {
                         disabled:cursor-not-allowed
                     "
                     placeholder={props.placeholder}
-                    onChange={e => setValue(e.target.value)}
-                    value={value}
+                    onChange={e => {
+                        if (props.onChange !== undefined) {
+                            props.onChange(e)
+                        }
+                        else {
+                            setValue(e.target.value)
+                        }
+                    }}
+                    value={props.onChange ? undefined : value}
+                    defaultValue={props.onChange ? props.defaultValue : undefined}
                     min={props.min}
                     max={props.max}
                     disabled={props.disabled}
