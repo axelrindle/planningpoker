@@ -1,6 +1,8 @@
-import { ChangeEventHandler, HTMLInputTypeAttribute, ReactNode, useCallback } from 'react'
+import { ChangeEventHandler, HTMLInputTypeAttribute, ReactNode, useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from '../../store'
 import { mergeFormData } from '../../store/slices/formData'
+import { getError } from '../../util/error'
+import { useForm } from './Form'
 
 export interface Props {
     type: HTMLInputTypeAttribute
@@ -11,35 +13,70 @@ export interface Props {
     placeholder?: string
     help?: string
     error?: string
-    formData?: string
     contentAfter?: ReactNode
     containerClassName?: string
     onChange?: ChangeEventHandler<HTMLInputElement>
     defaultValue?: string
+    disabled?: boolean
 }
 
-function useInitialValue(root: string, key: string) {
+export function useFormDataKey(): string {
+    const context = useForm()
+    return context.key ?? 'DUMMY'
+}
+
+function useInitialValue(root: string, props: Props) {
+    const defaultValue =  props.defaultValue || ''
     const data = useSelector(state => state.formData[root])
     if (!data) {
-        return undefined
+        return defaultValue
     }
 
-    return data[key]
+    return data[props.name] || defaultValue
+}
+
+function transformValue(value: any) {
+    switch (typeof value) {
+        case 'undefined':
+            return undefined
+        case 'number':
+            return value ? value : 0
+        default:
+            return value ? value : null
+    }
 }
 
 export default function Input(props: Props) {
-    const formDataKey = props.formData ?? 'DUMMY'
+    const context = useForm()
+    const formDataKey = useFormDataKey()
 
     const dispatch = useDispatch()
-    const _initialValue = useInitialValue(formDataKey, props.name)
-    const _setFormData = useCallback<ChangeEventHandler<HTMLInputElement>>(e => {
+    const initialValue = useInitialValue(formDataKey, props)
+    const error = context.mutation ? getError(context.mutation, props.name) : props.error
+
+    const [value, setValue] = useState(initialValue)
+
+    const persist = useCallback<(value: any) => void>(value => {
         dispatch(mergeFormData({
             key: formDataKey,
             value: {
-                [props.name]: e.target.value
+                [props.name]: transformValue(value)
             }
         }))
     }, [dispatch, formDataKey, props.name])
+
+    useEffect(() => {
+        persist(value)
+    }, [persist, value])
+
+    useEffect(() => {
+        if (props.disabled) {
+            setValue('')
+        }
+        else {
+            setValue(initialValue)
+        }
+    }, [initialValue, props.disabled])
 
     return (
         <div className={`flex flex-col gap-1 ${props.containerClassName ?? ''}`}>
@@ -54,18 +91,20 @@ export default function Input(props: Props) {
                         w-full p-4
                         text-black text-sm shadow-sm
                         border-2 border-violet-200 rounded
+                        disabled:cursor-not-allowed
                     "
                     placeholder={props.placeholder}
-                    defaultValue={props.formData ? _initialValue : props.defaultValue}
-                    onChange={props.formData ? _setFormData : props.onChange}
+                    onChange={e => setValue(e.target.value)}
+                    value={value}
                     min={props.min}
                     max={props.max}
+                    disabled={props.disabled}
                 />
                 {props.contentAfter}
             </div>
-            {props.error && (
+            {!props.disabled && error && (
                 <span className="text-sm text-red-500">
-                    {props.error}
+                    {error}
                 </span>
             )}
             {props.help && (
