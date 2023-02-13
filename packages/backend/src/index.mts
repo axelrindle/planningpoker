@@ -14,6 +14,7 @@ const logger = makeLogger('main')
 const container = await startContainer()
 const [http, websocket] = await startServer(container)
 
+export { container }
 
 export const shutdown: ShutdownFunction = async (customHook?: () => Promise<void>) => {
     process.stdout.write('\n') // insert newline after escape sequence

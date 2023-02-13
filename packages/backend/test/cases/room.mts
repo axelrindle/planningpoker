@@ -1,3 +1,4 @@
+import DatabaseService from '../../src/service/database.mjs'
 import test from '../create-application.mjs'
 
 test.serial('no rooms initially', async t => {
@@ -29,12 +30,41 @@ test.serial('create room', async t => {
     t.true(response.headers.get('Location')?.startsWith('/api/room/'))
 })
 
-test.serial('delete room', async t => {
-    const responseRooms = await fetch(`${t.context.apiUrl}/room`)
-    const rooms = await responseRooms.json()
-    const roomId = rooms[0].id
+const updatesSuccessful = [
+    {
+        key: 'name',
+        value: 'New Hello World'
+    },
+    {
+        key: 'description',
+        value: 'A new description'
+    },
+    {
+        key: 'userLimit',
+        value: 10
+    }
+]
+for (const update of updatesSuccessful) {
+    test.serial(`update room (single property: ${update.key})`, async t => {
+        const response = await fetch(`${t.context.apiUrl}/room/1`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                [update.key]: update.value,
+            })
+        })
+        t.is(response.status, 200)
 
-    const response = await fetch(`${t.context.apiUrl}/room/${roomId}`, {
+        const database = t.context.container.resolve<DatabaseService>('database')
+        const room = await database.querySingle(`select ${update.key} from room where id = 1`)
+        t.is(room[update.key], update.value)
+    })
+}
+
+test.serial('delete room', async t => {
+    const response = await fetch(`${t.context.apiUrl}/room/1`, {
         method: 'DELETE'
     })
     t.is(response.status, 200)
