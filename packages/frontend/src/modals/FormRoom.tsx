@@ -1,30 +1,37 @@
-import { faCheck, faClose } from '@fortawesome/free-solid-svg-icons'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { faCheck, faClose, faSave } from '@fortawesome/free-solid-svg-icons'
+import { useMutation, UseMutationResult, useQueryClient } from '@tanstack/react-query'
+import Form from '../components/form/Form'
 import Input from '../components/form/Input'
 import InputPassword from '../components/form/InputPassword'
+import InputToggleable from '../components/form/InputToggleable'
 import Modal, { ChildProps } from '../components/Modal'
-import { createRoom } from '../query/room'
-import { useDispatch, useSelector } from '../store'
-import { clearFormData, FormData } from '../store/slices/formData'
-import { FormError, getError } from '../util/error'
+import { createRoom, updateRoom } from '../query/room'
+import { useSelector } from '../store'
+import { FormData } from '../store/slices/formData'
+import { FormError } from '../util/error'
 
-const FORMDATA_KEY = 'room_create'
+const FORMDATA_KEY = 'form_room'
 
-interface Props extends ChildProps {}
+type Mode = 'create' | 'edit'
+interface Props extends ChildProps {
+    mode: Mode
+    room?: any
+}
 
-export default function ModalCreateRoom(props: Props) {
+export default function ModalFormRoom(props: Props) {
+    const isCreate = props.mode === 'create'
+
     const formData = useSelector(state => state.formData[FORMDATA_KEY])
     const apiUrl = useSelector(state => state.config.apiUrl)
-    const dispatch = useDispatch()
+
     const queryClient = useQueryClient()
-    const mutation = useMutation<Response, FormError, FormData>({
-        mutationFn: createRoom(apiUrl),
+    const mutation: UseMutationResult<Response, FormError, FormData> = useMutation({
+        mutationFn: isCreate ? createRoom(apiUrl) : updateRoom(apiUrl, props.room?.id),
         onSuccess: (_res, _v, _c) => {
             queryClient.invalidateQueries({
                 queryKey: ['rooms']
             })
             props.close()
-            dispatch(clearFormData(FORMDATA_KEY))
         }
     })
 
@@ -32,40 +39,41 @@ export default function ModalCreateRoom(props: Props) {
         <Modal
             isOpen={props.isOpen}
             disableClose={props.disableClose}
-            close={() => props.close()}
-            title="New Room"
-            subtitle="Create a new Room"
+            close={props.close}
+            title={isCreate ? 'New Room' : 'Edit Room'}
+            subtitle={isCreate ? 'Create a new Room' : 'Edit Room #' + props.room?.id}
             actions={[
                 {
                     label: 'Cancel',
                     icon: faClose,
-                    handle: () => props.close(),
+                    handle: props.close,
                 },
                 {
-                    label: 'Create',
-                    icon: faCheck,
+                    label: isCreate ? 'Create' : 'Save',
+                    icon: isCreate ? faCheck : faSave,
                     handle: () => mutation.mutate(formData),
                 },
             ]}
         >
-            <div className="grid grid-cols-2 gap-4">
+            <Form
+                name={FORMDATA_KEY}
+                mutation={mutation}
+                preFill={isCreate ? undefined : props.room}
+            >
                 <Input
                     type="text"
                     name="name"
                     label="Name"
                     placeholder="My awesome room"
-                    formData={FORMDATA_KEY}
-                    error={getError(mutation, 'name')}
                 />
 
-                <Input
+                <InputToggleable
                     type="number"
                     name="limit"
                     label="Limit"
-                    formData={FORMDATA_KEY}
-                    help="Limit the user count of a Room. Set to 0 to disable."
-                    error={getError(mutation, 'limit')}
+                    help="Limit the user count of a Room. Use the checkbox on the right to disable."
                     min={2}
+                    disabled={isCreate ? true : !props.room?.limit}
                 />
 
                 <Input
@@ -73,8 +81,7 @@ export default function ModalCreateRoom(props: Props) {
                     name="description"
                     label="Description"
                     placeholder="My awesome room is so awesome"
-                    formData={FORMDATA_KEY}
-                    error={getError(mutation, 'description')}
+                    help="What is this Room all about?"
                     containerClassName="col-span-2"
                 />
 
@@ -82,10 +89,8 @@ export default function ModalCreateRoom(props: Props) {
                     name="password"
                     label="Password"
                     help="Leave empty to create a public room."
-                    formData={FORMDATA_KEY}
-                    error={getError(mutation, 'password')}
                 />
-            </div>
+            </Form>
         </Modal>
     )
 }

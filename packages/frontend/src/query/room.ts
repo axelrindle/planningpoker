@@ -1,4 +1,4 @@
-import { MutationFunction, useQuery } from '@tanstack/react-query';
+import { MutationFunction, useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { useSelector } from '../store';
 import { FormData } from '../store/slices/formData'
 import { FormError } from '../util/error'
@@ -11,11 +11,12 @@ export function useRooms() {
     })
 }
 
-export function useRoom(roomId: string) {
+export function useRoom(roomId: string|number, opts?: UseQueryOptions) {
     const apiUrl = useSelector(state => state.config.apiUrl)
     return useQuery<any, any>({
+        ...opts,
         queryKey: ['rooms', roomId],
-        queryFn: () => fetch(`${apiUrl}/api/room/${roomId}`).then(response => response.json())
+        queryFn: () => fetch(`${apiUrl}/api/room/${roomId}`).then(response => response.json()),
     })
 }
 
@@ -24,6 +25,34 @@ export function createRoom(apiUrl: string): MutationFunction<Response, FormData>
         const response = await fetch(new URL('/api/room', apiUrl), {
             body: JSON.stringify(data),
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        switch (response.status) {
+            case 201:
+                return response
+            case 400:
+                const details = await response.json()
+                throw new FormError(details)
+            default:
+                throw new Error('Request failed!')
+        }
+    }
+}
+
+export function updateRoom(apiUrl: string, roomId: number): MutationFunction<Response, FormData> {
+    return async (data) => {
+        const copy = Object.assign({}, data)
+        Object.keys(copy).forEach(key => {
+            if (!copy[key]) {
+                copy[key] = null
+            }
+        })
+
+        const response = await fetch(new URL('/api/room/' + roomId, apiUrl), {
+            body: JSON.stringify(copy),
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             }

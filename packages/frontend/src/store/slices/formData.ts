@@ -21,8 +21,15 @@ export const formDataSlice = createSlice<State, SliceCaseReducers<State>>({
             const theNew = Object.assign(original, action.payload.value)
             state[action.payload.key] = theNew
         },
-        clearFormData: (state, action: PayloadAction<string>) => {
-            delete state[action.payload]
+        clearFormData: (state, action: PayloadAction<string|string[]>) => {
+            if (Array.isArray(action.payload)) {
+                for (const key of action.payload) {
+                    delete state[key]
+                }
+            }
+            else {
+                delete state[action.payload]
+            }
         }
     }
 })

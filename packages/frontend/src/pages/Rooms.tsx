@@ -3,17 +3,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
 import { Item, Menu, Separator, useContextMenu } from 'react-contexify'
 import { Link } from 'react-router-dom'
-import Button from '../components/Button'
-import ModalCreateRoom from '../modals/CreateRoom'
-import ModalDeleteRoom from '../modals/DeleteRoom'
-import { useRooms } from '../query/room'
-import { useSelector } from '../store'
 import illustrationVoid from '../assets/illustrations/undraw_void_-3-ggu.svg'
+import Button from '../components/Button'
 import Header from '../components/Header'
+import ModalDeleteRoom from '../modals/DeleteRoom'
+import ModalFormRoom from '../modals/FormRoom'
+import { useRoom, useRooms } from '../query/room'
+import { useSelector } from '../store'
 
 const CONTEXT_MENU_ID = 'context-menu-rooms'
 
-type Modal = 'create' | 'delete'
+type Modal = 'create' | 'edit' | 'delete'
 
 function NoRooms(props: { add: () => void }) {
     return (
@@ -46,8 +46,9 @@ export default function PageRooms() {
     })
     const darkModeActive = useSelector(state => state.config.darkModeActive)
 
-    const { isError, isLoading, error, data, refetch } = useRooms()
-    const rooms = data ?? []
+    const { isError, isLoading, error, data: _rooms, refetch } = useRooms()
+    const room = useRoom(roomId, { enabled: openModal === 'edit' })
+    const rooms = _rooms ?? []
 
     return (
         <>
@@ -114,9 +115,16 @@ export default function PageRooms() {
                 </p>
             )}
 
-            <ModalCreateRoom
+            <ModalFormRoom
                 isOpen={openModal === 'create'}
                 close={() => setOpenModal(null)}
+                mode="create"
+            />
+            <ModalFormRoom
+                isOpen={openModal === 'edit' && room.isFetched}
+                close={() => setOpenModal(null)}
+                mode="edit"
+                room={room.data}
             />
             <ModalDeleteRoom
                 isOpen={openModal === 'delete'}
@@ -133,7 +141,7 @@ export default function PageRooms() {
                     Room #{roomId}
                 </Item>
                 <Separator />
-                <Item>
+                <Item onClick={() => setOpenModal('edit')}>
                     <FontAwesomeIcon icon={faPencil} />
                     <span className="ml-4">Edit</span>
                 </Item>
