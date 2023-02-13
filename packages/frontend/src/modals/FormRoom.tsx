@@ -69,11 +69,11 @@ export default function ModalFormRoom(props: Props) {
 
                 <InputToggleable
                     type="number"
-                    name="limit"
+                    name="userLimit"
                     label="Limit"
-                    help="Limit the user count of a Room. Use the checkbox on the right to disable."
+                    help="userLimit the user count of a Room. Use the checkbox on the right to disable."
                     min={2}
-                    disabled={isCreate ? true : !props.room?.limit}
+                    disabled={isCreate ? true : !props.room?.userLimit}
                 />
 
                 <Input

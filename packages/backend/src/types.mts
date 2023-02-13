@@ -22,7 +22,7 @@ export interface Room {
     id: number
     name: string
     description?: string
-    limit?: number
+    userLimit?: number
     password?: string
 }
 

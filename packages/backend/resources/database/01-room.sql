@@ -2,7 +2,7 @@ CREATE TABLE "room" (
 	"id"			INTEGER,
 	"name"			TEXT NOT NULL UNIQUE,
 	"description"	TEXT,
-	"limit"			INTEGER,
+	"userLimit"			INTEGER,
 	"password"		TEXT,
 	PRIMARY KEY("id" AUTOINCREMENT)
 );

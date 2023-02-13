@@ -72,7 +72,7 @@ function onConnection(container: AwilixContainer) {
             return
         }
 
-        if (room.limit && gameManager.getUsers(room) >= room.limit) {
+        if (room.userLimit && gameManager.getUsers(room) >= room.userLimit) {
             socket.send(JSON.stringify({
                 error: 'This room is full!'
             }))

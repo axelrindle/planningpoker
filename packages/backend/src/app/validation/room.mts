@@ -30,7 +30,7 @@ export const validateRoomCreation = checkSchema({
         isString: true,
         optional: true,
     },
-    limit: {
+    userLimit: {
         isInt: {
             options: {
                 min: 2
@@ -94,7 +94,7 @@ export const validateRoomUpdate = checkSchema({
             }
         },
     },
-    limit: {
+    userLimit: {
         optional: {
             options: {
                 nullable: true,

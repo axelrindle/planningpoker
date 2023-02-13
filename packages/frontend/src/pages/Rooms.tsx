@@ -102,8 +102,8 @@ export default function PageRooms() {
                                 </p>
                             )}
                             <p className="text-xs">
-                                {room.limit === null && <span>{room.users} users</span>}
-                                {room.limit !== null && <span>{room.users} / {room.limit} users</span>}
+                                {room.userLimit === null && <span>{room.users} users</span>}
+                                {room.userLimit !== null && <span>{room.users} / {room.userLimit} users</span>}
                             </p>
                         </Link>
                     ))}

@@ -44,7 +44,7 @@ export default class RoomController {
     }
 
     async create(req: Request, res: Response) {
-        const { name, description, limit, password } = req.body
+        const { name, description, userLimit, password } = req.body
 
         let passwordEncrypted: string|undefined = undefined
         if (password) {
@@ -52,10 +52,10 @@ export default class RoomController {
         }
 
         try {
-            await this.database.run('insert into room values (null, $name, $description, $limit, $password)', {
+            await this.database.run('insert into room values (null, $name, $description, $userLimit, $password)', {
                 $name: name,
                 $description: description,
-                $limit: limit,
+                $userLimit: userLimit,
                 $password: passwordEncrypted
             })
             const id = await this.database.querySingle('select id from room where name = ?', [name])
@@ -73,7 +73,7 @@ export default class RoomController {
     }
 
     async update(req: Request, res: Response) {
-        const { name, description, limit, password } = req.body
+        const { name, description, userLimit, password } = req.body
 
         let passwordEncrypted: string|null = null
         if (password) {
@@ -81,7 +81,7 @@ export default class RoomController {
         }
 
         const updates: Record<string, string|null|undefined> = {
-            name, description, limit, password: passwordEncrypted
+            name, description, userLimit, password: passwordEncrypted
         }
 
         const sets: SqlSet[] = Object.keys(updates)
