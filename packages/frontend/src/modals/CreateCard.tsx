@@ -4,6 +4,7 @@ import { ChangeEvent, useCallback, useState } from 'react'
 import { Stepper } from 'react-form-stepper'
 import { StepDTO } from 'react-form-stepper/dist/components/Step/StepTypes.js'
 import { useTus } from 'use-tus'
+import Form from '../components/form/Form'
 import Input from '../components/form/Input'
 import Modal, { ChildProps } from '../components/Modal'
 import { createCard, updateCard } from '../query/card'
@@ -83,7 +84,6 @@ export default function ModalCreateCard(props: Props) {
             },
             async onAfterResponse(req, res) {
                 const response = res.getUnderlyingObject() as XMLHttpRequest
-                console.log(response.status)
                 if (response.status === 204) {
                     const split = response.responseURL.split('/')
                     const hash = split[split.length - 1]
@@ -154,13 +154,15 @@ export default function ModalCreateCard(props: Props) {
             />
 
             {activeStep === 0 && (
-                <div className="grid grid-cols-2 gap-4">
+                <Form
+                    name={FORMDATA_KEY}
+                    mutation={mutationCreate}
+                >
                     <Input
                         type="text"
                         name="name"
                         label="Name"
                         placeholder="Card No. 5"
-                        formData={FORMDATA_KEY}
                         help="A unique name for this card. Use the value for simplicity or something special."
                         error={getError(mutationCreate, 'name')}
                     />
@@ -169,12 +171,11 @@ export default function ModalCreateCard(props: Props) {
                         type="number"
                         name="value"
                         label="Card Value"
-                        formData={FORMDATA_KEY}
                         help="The numeric value of this card. Must be positive."
                         error={getError(mutationCreate, 'value')}
                         min={2}
                     />
-                </div>
+                </Form>
             )}
 
             {activeStep === 1 && (
