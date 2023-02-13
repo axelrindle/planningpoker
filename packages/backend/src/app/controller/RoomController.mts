@@ -84,20 +84,20 @@ export default class RoomController {
             name, description, userLimit, password: passwordEncrypted
         }
 
-        const sets: SqlSet[] = Object.keys(updates)
+        const sets = Object.keys(updates)
             .map(key => {
                 if (updates[key] === undefined) return undefined
                 else if (updates[key] === null) return {
                     sql: `\`${key}\` = NULL`,
                     key,
-                }
+                } as SqlSet
                 else return {
                     sql: `\`${key}\` = $${key}`,
                     key,
                     value: updates[key]
-                }
+                } as SqlSet
             })
-            .filter(val => val !== undefined)
+            .filter(val => val !== undefined) as SqlSet[]
 
         if (sets.length === 0) {
             res.end()
