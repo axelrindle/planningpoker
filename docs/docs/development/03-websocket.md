@@ -1,12 +1,11 @@
-# WebSocket API
+# WebSocket Communication API
 
 The backend and frontend communicate in realtime via a WebSocket connection. They use a defined set of events to exchange data and decide what to do.
 
 ## Authentication
 
 In case a Room is private, it's WebSocket connection must be authorized. This is handled via the
-Http Header `Authorization`. The password must be sent in combination with the `Bearer`
-authentication scheme.
+Http Header `Authorization`. The password must be sent in combination with the `Bearer` authentication scheme.
 
 All unauthorized connections will be closed immediately.
 
@@ -31,15 +30,16 @@ The `event` attribute specifies the current event type.
 The `data` attribute may hold any additional data depending on the event type.
 
 ## Events
+
 ### Backend
 
 The backend may send the following events:
 
-| Event | Description |
-| --- | --- |
-| HELLO | Sent once a connection has been established and assigns the user a unique ID. |
-| UPDATE | Delivers the current game state when it changes. |
-| DELETE | A room has been deleted. |
+| Event  | Description                                                                   |
+| ------ | ----------------------------------------------------------------------------- |
+| HELLO  | Sent once a connection has been established and assigns the user a unique ID. |
+| UPDATE | Delivers the current game state when it changes.                              |
+| DELETE | A room has been deleted.                                                      |
 
 #### Examples
 
@@ -102,8 +102,8 @@ The backend may send the following events:
 
 The backend may send the following events:
 
-| Event | Description |
-| --- | --- |
+| Event  | Description                                          |
+| ------ | ---------------------------------------------------- |
 | SELECT | Tells the backend that a player has selected a card. |
 
 #### Examples
