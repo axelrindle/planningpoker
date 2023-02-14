@@ -97,7 +97,7 @@ jobs:
         files: packages/${{ matrix.package }}/coverage/lcov.info
     - name: Fix source paths in coverage report
       if: steps.check_files.outputs.files_exists == 'true'
-      uses: visiosto/replace-value@v1
+      uses: visiosto/replace-value@v1.2.1
       with:
         file: packages/${{ matrix.package }}/coverage/lcov.info
         replaced: '^SF:'
