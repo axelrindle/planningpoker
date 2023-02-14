@@ -124,13 +124,14 @@ export default function ModalCreateCard(props: Props) {
                     label: 'Cancel',
                     icon: faClose,
                     handle: () => handleClose(),
-                    disabled: disableClose
+                    disabled: disableClose,
+                    hidden: activeStep === 2
                 },
                 {
                     label: () => {
                         switch (activeStep) {
                             case 1: return 'Upload'
-                            case 2: return 'Finish'
+                            case 2: return 'Close'
                             default: return 'Create'
                         }
                     },
