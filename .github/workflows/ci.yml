@@ -99,7 +99,7 @@ jobs:
       if: steps.check_files.outputs.files_exists == 'true'
       uses: actions/upload-artifact@v3
       with:
-        name: coverage-${{ matrix }}
+        name: coverage-${{ matrix.package }}
         path: packages/${{ matrix.package }}/coverage/lcov.info
         retention-days: 1
         
@@ -107,6 +107,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test]
     steps:
+      - name: Clean Workspace
+        uses: AutoModality/action-clean@v1
       - name: Download coverage reports
         uses: actions/download-artifact@v3.0.2
       - name: Check for coverage files
@@ -118,7 +120,7 @@ jobs:
         id: file_list
         if: steps.check_files.outputs.files_exists == 'true'
         run: |
-          FILES=$(find . -type f | tr '\n' ',')
+          FILES=$(find coverage-* -type f | tr '\n' ',')
           echo "files=$FILES" >> $GITHUB_OUTPUT
       - name: Run codacy-coverage-reporter
         if: steps.check_files.outputs.files_exists == 'true'
