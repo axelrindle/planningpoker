@@ -2,7 +2,7 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useEventListener from '@use-it/event-listener'
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Button from '../components/Button'
 import Content from './Content';
@@ -14,6 +14,7 @@ interface Action {
     handle: () => void
     icon: IconProp
     disabled?: boolean
+    hidden?: boolean
 }
 
 interface Props {
@@ -46,6 +47,13 @@ export default function Modal(props: Props) {
                 break;
         }
     })
+
+    const [actions, setActions] = useState(props.actions)
+
+    useEffect(() => {
+        const newActions = props.actions.filter(el => !el.hidden)
+        setActions(newActions)
+    }, [props.actions])
 
     if (!props.isOpen) return (<></>)
 
@@ -93,7 +101,7 @@ export default function Modal(props: Props) {
                     <hr className="my-8" />
 
                     <div className="flex flex-row items-center justify-end gap-4">
-                        {props.actions.map((action, index) => (
+                        {actions.map((action, index) => (
                             <Button
                                 key={index}
                                 label={action.label}
