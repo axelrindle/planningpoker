@@ -1,6 +1,6 @@
-import { faCheck, faClose } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faClose, faRepeat } from '@fortawesome/free-solid-svg-icons'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { ChangeEvent, useCallback, useState } from 'react'
+import { ChangeEvent, useCallback, useMemo, useState } from 'react'
 import { Stepper } from 'react-form-stepper'
 import { StepDTO } from 'react-form-stepper/dist/components/Step/StepTypes.js'
 import { useTus } from 'use-tus'
@@ -103,20 +103,27 @@ export default function ModalCreateCard(props: Props) {
         upload.start()
     }, [upload])
 
-    const disableClose = activeStep > 0 && activeStep < steps.length
+    const { close } = props
+    const handleClose = useCallback(() => {
+        close()
+        setActiveStep(0)
+        mutationCreate.reset()
+        mutationUpdate.reset()
+    }, [close, mutationCreate, mutationUpdate])
+    const disableClose = useMemo(() => activeStep > 0 && activeStep < steps.length, [activeStep])
 
     return (
         <Modal
             isOpen={props.isOpen}
             disableClose={disableClose}
-            close={() => props.close()}
+            close={() => handleClose()}
             title="New Card"
             subtitle="Create a new Card"
             actions={[
                 {
                     label: 'Cancel',
                     icon: faClose,
-                    handle: () => props.close(),
+                    handle: () => handleClose(),
                     disabled: disableClose
                 },
                 {
@@ -137,14 +144,19 @@ export default function ModalCreateCard(props: Props) {
                                 handleStart()
                                 break
                             case 2:
-                                props.close()
-                                setActiveStep(0)
+                                handleClose()
                                 break
                             default:
                                 break
                         }
                     },
                     disabled: activeStep === 1 && !hasFile
+                },
+                {
+                    label: 'Create another Card',
+                    icon: faRepeat,
+                    handle: () => setActiveStep(0),
+                    hidden: activeStep !== 2
                 },
             ]}
         >
