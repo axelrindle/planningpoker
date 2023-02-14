@@ -101,7 +101,7 @@ jobs:
       with:
         file: packages/${{ matrix.package }}/coverage/lcov.info
         replaced: '^SF:'
-        value: SF:packages/${{ matrix.package }}/
+        value: SF:packages\/${{ matrix.package }}\/
     - name: Upload coverage reports
       if: steps.check_files.outputs.files_exists == 'true'
       uses: actions/upload-artifact@v3
