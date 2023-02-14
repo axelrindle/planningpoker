@@ -7,7 +7,7 @@ import { ShutdownFunction } from './types.mjs'
 
 if (! process.env['DISABLE_BANNER']) {
     const banner = await readFile('resources/banner.txt')
-    process.stdout.write(banner)
+    process.stderr.write(banner)
 }
 
 const logger = makeLogger('main')
