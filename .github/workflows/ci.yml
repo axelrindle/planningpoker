@@ -101,6 +101,7 @@ jobs:
       with:
         project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
         coverage-reports: packages/${{ matrix.package }}/coverage/lcov.info
+        language: typescript
 
   docker:
     runs-on: ubuntu-latest
