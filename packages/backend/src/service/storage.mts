@@ -2,6 +2,7 @@ import { IConfig } from 'config'
 import { stat } from 'fs/promises'
 import mkdirp from 'mkdirp'
 import { isAbsolute, join, resolve } from 'path'
+import rimraf from 'rimraf'
 import { Logger } from 'winston'
 import { makeLogger } from '../logger.mjs'
 import { Service } from '../types.mjs'
@@ -49,8 +50,8 @@ export default class StorageService extends Service {
         await this.ensureDirectory()
     }
 
-    resolve(path: string): string {
-        return join(this.directory, path)
+    resolve(...path: string[]): string {
+        return join(this.directory, ...path)
     }
 
     async exists(path: string): Promise<boolean> {
@@ -69,6 +70,11 @@ export default class StorageService extends Service {
         if (! await this.isDirectory(abs)) {
             await mkdirp(abs)
         }
+    }
+
+    async delete(path: string) {
+        const abs = this.resolve(path)
+        await rimraf(abs)
     }
 
     private async isDirectory(path: string): Promise<boolean> {

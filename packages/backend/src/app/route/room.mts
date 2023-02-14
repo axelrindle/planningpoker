@@ -1,6 +1,6 @@
 import { createController } from 'awilix-express'
 import RoomController from '../controller/RoomController.mjs'
-import { roomExists } from '../middleware/room.mjs'
+import { roomExists } from '../middleware/entity.mjs'
 import validate from '../middleware/validation.mjs'
 import { validateRoomCreation, validateRoomUpdate } from '../validation/room.mjs'
 

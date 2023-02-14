@@ -1,15 +1,15 @@
 import { faLock, faPencil, faPlus, faRefresh, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
-import { Item, Menu, Separator, useContextMenu } from 'react-contexify'
+import { Item, Separator, useContextMenu } from 'react-contexify'
 import { Link } from 'react-router-dom'
 import illustrationVoid from '../assets/illustrations/undraw_void_-3-ggu.svg'
 import Button from '../components/Button'
+import ContextMenu from '../components/ContextMenu'
 import Header from '../components/Header'
 import ModalDeleteRoom from '../modals/DeleteRoom'
 import ModalFormRoom from '../modals/FormRoom'
 import { useRoom, useRooms } from '../query/room'
-import { useSelector } from '../store'
 
 const CONTEXT_MENU_ID = 'context-menu-rooms'
 
@@ -44,7 +44,6 @@ export default function PageRooms() {
     const contextMenu = useContextMenu({
         id: CONTEXT_MENU_ID
     })
-    const darkModeActive = useSelector(state => state.config.darkModeActive)
 
     const { isError, isLoading, error, data: _rooms, refetch } = useRooms()
     const room = useRoom(roomId, { enabled: openModal === 'edit' })
@@ -132,9 +131,8 @@ export default function PageRooms() {
                 roomId={roomId}
             />
 
-            <Menu
+            <ContextMenu
                 id={CONTEXT_MENU_ID}
-                theme={darkModeActive ? 'light' : 'dark'}
                 animation="slide"
             >
                 <Item disabled>
@@ -149,7 +147,7 @@ export default function PageRooms() {
                     <FontAwesomeIcon icon={faTrash} />
                     <span className="ml-4">Delete</span>
                 </Item>
-            </Menu>
+            </ContextMenu>
         </>
     )
 }

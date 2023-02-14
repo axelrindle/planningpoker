@@ -1,18 +1,29 @@
-import { faPlus, faRefresh } from '@fortawesome/free-solid-svg-icons'
+import { faPencil, faPlus, faRefresh, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
+import { Item, Separator, useContextMenu } from 'react-contexify'
 import Button from '../components/Button'
+import ContextMenu from '../components/ContextMenu'
 import Header from '../components/Header'
 import ModalCreateCard from '../modals/CreateCard'
+import ModalDeleteCard from '../modals/DeleteCard'
 import { useCards } from '../query/card'
 import { useSelector } from '../store'
 
-type Modal = 'create'
+type Modal = 'create' | 'edit' | 'delete'
+
+const CONTEXT_MENU_ID = 'context-menu-cards'
 
 export default function PageCards() {
     const apiUrl = useSelector(state => state.config.apiUrl)
     const { isError, isLoading, error, data, refetch } = useCards()
     const rooms: any[] = data ?? []
 
+    const contextMenu = useContextMenu({
+        id: CONTEXT_MENU_ID
+    })
+
+    const [card, setCard] = useState<any>(null)
     const [openModal, setOpenModal] = useState<Modal|null>(null)
 
     return (
@@ -38,7 +49,14 @@ export default function PageCards() {
             {rooms.length > 0 && (
                 <div className="grid grid-cols-6 gap-4">
                     {rooms.map((el, index) => (
-                        <div className="border-2 border-primary p-4" key={index}>
+                        <div
+                            className="border-2 border-primary p-4"
+                            key={index}
+                            onContextMenu={event => {
+                                setCard(el)
+                                contextMenu.show({ event })
+                            }}
+                        >
                             <p>Name: <u>{el.name}</u></p>
                             <p>Value: <u>{el.value}</u></p>
                             {el.image && (
@@ -72,6 +90,30 @@ export default function PageCards() {
                 isOpen={openModal === 'create'}
                 close={() => setOpenModal(null)}
             />
+
+            <ModalDeleteCard
+                isOpen={openModal === 'delete'}
+                close={() => setOpenModal(null)}
+                card={card}
+            />
+
+            <ContextMenu
+                id={CONTEXT_MENU_ID}
+                animation="slide"
+            >
+                <Item disabled>
+                    Card {card?.name}
+                </Item>
+                <Separator />
+                <Item onClick={() => setOpenModal('edit')}>
+                    <FontAwesomeIcon icon={faPencil} />
+                    <span className="ml-4">Edit</span>
+                </Item>
+                <Item onClick={() => setOpenModal('delete')}>
+                    <FontAwesomeIcon icon={faTrash} />
+                    <span className="ml-4">Delete</span>
+                </Item>
+            </ContextMenu>
         </>
     )
 }
