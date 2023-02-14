@@ -1,6 +1,7 @@
 import { AwilixContainer } from 'awilix'
 import { randomUUID } from 'crypto'
 import { IncomingMessage } from 'http'
+import PrettyError from 'pretty-error'
 import { Duplex } from 'stream'
 import { parse } from 'url'
 import { WebSocket, WebSocketServer } from 'ws'
@@ -17,6 +18,7 @@ declare module 'http' {
 }
 
 const logger = makeLogger('websocket')
+const prettyError = new PrettyError()
 const users: string[] = []
 
 function findUuid(): string {
@@ -127,13 +129,19 @@ function onConnection(container: AwilixContainer) {
 
         sendUpdate()
 
-        socket.on('close', _hadError => {
+        socket.on('error', error => {
+            logger.error('Something went wrong:\n\n' + prettyError.render(error))
+        })
+
+        socket.on('close', (code, reason) => {
             // game is undefined in case it has been deleted
             if (gameManager.findGameByRoom(room) !== undefined) {
                 gameManager.quit(room, uuid)
                 sendUpdate()
-                logger.debug('Connection closed: ' + uuid)
             }
+            logger.debug(`Connection closed: ${uuid}`, {
+                uuid, code, reason
+            })
         })
 
         socket.on('message', data => {
