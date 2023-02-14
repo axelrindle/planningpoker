@@ -11,6 +11,8 @@ function Link(props: LinkProps) {
     return (
         <a
             href={props.href}
+            target='_blank'
+            rel='noreferrer'
             className="underline"
         >
             {props.children}
