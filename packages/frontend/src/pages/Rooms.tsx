@@ -3,10 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useState } from 'react'
 import { Item, Separator, useContextMenu } from 'react-contexify'
 import { Link } from 'react-router-dom'
-import illustrationVoid from '../assets/illustrations/undraw_void_-3-ggu.svg'
 import Button from '../components/Button'
 import ContextMenu from '../components/ContextMenu'
 import Header from '../components/Header'
+import NothingFound from '../components/NothingFound'
 import ModalDeleteRoom from '../modals/DeleteRoom'
 import ModalFormRoom from '../modals/FormRoom'
 import { useRoom, useRooms } from '../query/room'
@@ -14,29 +14,6 @@ import { useRoom, useRooms } from '../query/room'
 const CONTEXT_MENU_ID = 'context-menu-rooms'
 
 type Modal = 'create' | 'edit' | 'delete'
-
-function NoRooms(props: { add: () => void }) {
-    return (
-        <div className="flex flex-col items-center justify-center gap-8">
-            <img
-                src={illustrationVoid}
-                className="w-60"
-                alt="man looking into the void"
-            />
-            <div className="text-center">
-                <p className="font-bold text-lg mb-2">
-                    Seems like there are no rooms ...
-                </p>
-                <p
-                    className="underline cursor-pointer"
-                    onClick={props.add}
-                >
-                    Why not create one?
-                </p>
-            </div>
-        </div>
-    )
-}
 
 export default function PageRooms() {
     const [openModal, setOpenModal] = useState<Modal|null>(null)
@@ -70,7 +47,10 @@ export default function PageRooms() {
             </Header>
 
             {!isError && !isLoading && rooms.length === 0 && (
-                <NoRooms add={() => setOpenModal('create')} />
+                <NothingFound
+                    entity='Rooms'
+                    add={() => setOpenModal('create')}
+                />
             )}
             {!isError && !isLoading && rooms.length > 0 && (
                 <div className="grid grid-cols-4 gap-8 items-start">

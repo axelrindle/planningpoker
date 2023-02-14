@@ -5,6 +5,7 @@ import { Item, Separator, useContextMenu } from 'react-contexify'
 import Button from '../components/Button'
 import ContextMenu from '../components/ContextMenu'
 import Header from '../components/Header'
+import NothingFound from '../components/NothingFound'
 import ModalCreateCard from '../modals/CreateCard'
 import ModalDeleteCard from '../modals/DeleteCard'
 import { useCards } from '../query/card'
@@ -17,7 +18,7 @@ const CONTEXT_MENU_ID = 'context-menu-cards'
 export default function PageCards() {
     const apiUrl = useSelector(state => state.config.apiUrl)
     const { isError, isLoading, error, data, refetch } = useCards()
-    const rooms: any[] = data ?? []
+    const cards: any[] = data ?? []
 
     const contextMenu = useContextMenu({
         id: CONTEXT_MENU_ID
@@ -46,9 +47,16 @@ export default function PageCards() {
                 />
             </Header>
 
-            {rooms.length > 0 && (
+            {!isError && !isLoading && cards.length === 0 && (
+                <NothingFound
+                    entity='Cards'
+                    add={() => setOpenModal('create')}
+                />
+            )}
+
+            {cards.length > 0 && (
                 <div className="grid grid-cols-6 gap-4">
-                    {rooms.map((el, index) => (
+                    {cards.map((el, index) => (
                         <div
                             className="border-2 border-primary p-4"
                             key={index}
@@ -74,11 +82,6 @@ export default function PageCards() {
                         </div>
                     ))}
                 </div>
-            )}
-            {!isError && rooms.length === 0 && (
-                <p>
-                    No Cards
-                </p>
             )}
             {isError && (
                 <p className="font-bold text-red-500">
