@@ -6,10 +6,32 @@ import { Logger } from 'winston'
 import { makeLogger } from '../logger.mjs'
 import { Service } from '../types.mjs'
 
+const configKey = 'data_directory'
+
+function getConfigValue(config: IConfig): string | undefined {
+    if (config.has(configKey)) {
+        return config.get(configKey) as string
+    }
+
+    return undefined
+}
+
+export function getStorageDirectory(config: IConfig): string {
+    const dataDirectory = getConfigValue(config)
+    if (!dataDirectory) {
+        return join(process.cwd(), 'data')
+    }
+    else if (!isAbsolute(dataDirectory)) {
+        return resolve(process.cwd(), dataDirectory)
+    }
+    else {
+        return resolve(dataDirectory)
+    }
+}
+
 export default class StorageService extends Service {
 
     readonly priority = 1
-    private readonly configKey = 'data_directory'
     private directory: string
 
     private logger: Logger
@@ -18,17 +40,7 @@ export default class StorageService extends Service {
         super()
 
         this.logger = makeLogger('storage')
-
-        const dataDirectory = this.getConfigValue(config)
-        if (!dataDirectory) {
-            this.directory = join(process.cwd(), 'data')
-        }
-        else if (!isAbsolute(dataDirectory)) {
-            this.directory = resolve(process.cwd(), dataDirectory)
-        }
-        else {
-            this.directory = resolve(dataDirectory)
-        }
+        this.directory = getStorageDirectory(config)
 
         this.logger.debug('Data is at ' + this.directory)
     }
@@ -57,14 +69,6 @@ export default class StorageService extends Service {
         if (! await this.isDirectory(abs)) {
             await mkdirp(abs)
         }
-    }
-
-    private getConfigValue(config: IConfig): string | undefined {
-        if (config.has(this.configKey)) {
-            return config.get(this.configKey) as string
-        }
-
-        return undefined
     }
 
     private async isDirectory(path: string): Promise<boolean> {

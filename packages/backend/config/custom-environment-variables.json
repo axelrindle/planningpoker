@@ -10,11 +10,17 @@
     },
 
     "logging": {
+        "enabled": "PP_LOGGING_ENABLED",
+        "format": "PP_LOGGING_FORMAT",
         "level": "PP_LOG_LEVEL",
         "timestamp": "PP_LOG_TIMESTAMP",
         "http": {
             "enabled": "PP_LOG_HTTP_ENABLED",
             "format": "PP_LOG_HTTP_FORMAT"
+        },
+        "transports": {
+            "console": "PP_LOG_TRANSPORT_CONSOLE",
+            "file": "PP_LOG_TRANSPORT_FILE"
         }
     }
 }

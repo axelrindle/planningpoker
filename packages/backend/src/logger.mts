@@ -1,77 +1,86 @@
 import chalk from 'chalk'
 import config from 'config'
+import { join } from 'path'
 import { createLogger, format, Logger, transports } from 'winston'
+import DailyRotateFile from 'winston-daily-rotate-file'
+import TransportStream from 'winston-transport'
+import { getStorageDirectory } from './service/storage.mjs'
 
 const { combine, printf } = format
 
-const extractAdditional = format(info => {
-    const additional = Object.assign({}, info, {
-        level: undefined,
-        label: undefined,
-        message: undefined,
-        timestamp: undefined,
-        stack: undefined,
-        additional: undefined
-    })
-
-    if (JSON.stringify(additional) !== '{}') {
-        info['additional'] = additional
+const plainFormat = printf(info => {
+    const label = info['label'] ?? '???'
+    const prefix = chalk.dim(`[${info['timestamp']}] [${label}]`)
+    let base = `${prefix} ${info.level}: ${info.message}`
+    if (info['stack']) {
+        base += '\n' + info['stack']
     }
-
-    return info
+    return base
+})
+const timestampFormat = format.timestamp({
+    format: config.get('logging.timestamp')
 })
 
-/**
- * Just the raw logging format without coloring.
- *
- * Looks like this: `[timestamp] [label] level: message`
- */
-const baseFormat = () => {
-    const myFormat = printf(info => {
-        const label = info['label'] ? info['label'] : 'main' // default label is 'main'
-        const prefix = chalk.dim('[' + info['timestamp'] + '] [' + label + ']')
-        let base = `${prefix} ${info.level}: ${info.message}`
-        if (info['stack']) {
-            base += '\n' + info['stack']
-        }
-        if (info['additional']) {
-            base += '\nAdditional context: ' + JSON.stringify(info['additional'], null, 4)
-        }
-        return base
-    })
+const thePlainFormat = combine(
+    timestampFormat,
+    format.colorize(),
+    plainFormat,
+)
+const theJsonFormat = combine(
+    timestampFormat,
+    format.metadata({
+        fillExcept: ['label', 'level', 'timestamp', 'message']
+    }),
+    format.uncolorize(),
+    format.json(),
+)
+const theFileFormat = combine(
+    timestampFormat,
+    plainFormat,
+    format.uncolorize(),
+)
 
-    return combine(
-        format.timestamp({
-            format: config.get('logging.timestamp')
+function getFormat() {
+    const it = config.get('logging.format')
+    switch (it) {
+        case 'plain':
+            return thePlainFormat
+        case 'json':
+            return theJsonFormat
+        default:
+            throw new Error(`Invalid logging format "${it}" !`)
+    }
+}
+
+function getTransports(): TransportStream[] {
+    const def: TransportStream[] = [
+        new transports.Console({
+            silent: !config.get('logging.transports.console')
         }),
-        format.errors({ stack: true }),
-        format.splat(),
-        extractAdditional(),
-        myFormat
-    )
+        new DailyRotateFile({
+            silent: !config.get('logging.transports.file'),
+            format: theFileFormat,
+            zippedArchive: true,
+            maxFiles: 10,
+            dirname: join(getStorageDirectory(config), 'logs'),
+            watchLog: true,
+        })
+    ]
+
+    return def
 }
 
 const logger = createLogger({
-    format: combine(
-        format.colorize(),
-        baseFormat()
-    ),
+    format: getFormat(),
     levels: {
         'error': 0,
         'warn': 1,
         'info': 2,
         'debug': 3
     },
+    silent: !config.get('logging.enabled'),
     level: config.has('logging.level') ? config.get('logging.level') : 'info',
-    transports: [
-        new transports.Console({
-            silent: process.env['NODE_ENV'] === 'test'
-        }),
-        /*new transports.File({
-            filename: config.get('logging.wog.file'),
-            format: combine(baseFormat(), format.uncolorize())
-        })*/
-    ]
+    transports: getTransports()
 })
 
 export default logger

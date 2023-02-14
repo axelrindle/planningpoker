@@ -11,6 +11,8 @@ if (! process.env['DISABLE_BANNER']) {
 }
 
 const logger = makeLogger('main')
+logger.info('Initializing...')
+
 const container = await startContainer()
 const [http, websocket] = await startServer(container)
 

@@ -8,11 +8,17 @@
     },
 
     "logging": {
+        "enabled": true,
+        "format": "plain",
         "level": "info",
         "timestamp": "DD.MM.YYYY HH:mm:ss.SSS",
         "http": {
             "format": "short",
             "enabled": true
+        },
+        "transports": {
+            "console": true,
+            "file": false
         }
     }
 }

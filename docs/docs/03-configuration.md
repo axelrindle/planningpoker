@@ -14,10 +14,14 @@ Configuration is done via environment variables. Entries without a default value
 | PP_SERVER_HOST           | `0.0.0.0`                   | The host the server will listen on.                                                                                                       |
 | PP_SERVER_PORT           | `3000`                      | The port the server will listen on.                                                                                                       |
 | PP_SERVER_PORT_WEBSOCKET | `3001`                      | The port the WebSocket server will listening on.                                                                                          |
+| PP_LOGGING_ENABLED       | `true`                      | Whether to do logging.                                                                                                                    |
+| PP_LOGGING_FORMAT        | `plain`                     | How to format logs. May be `plain` or `json`.                                                                                             |
 | PP_LOG_LEVEL             | `info`                      | What kind of information to log. May be one of `error`, `warn`, `info` or `debug`.                                                        |
 | PP_LOG_TIMESTAMP         | `DD.MM.YYYY HH:mm:ss.SSS`   | How to format timestamps in the log.                                                                                                      |
 | PP_LOG_HTTP_ENABLED      | `true`                      | Whether to log Http requests.                                                                                                             |
 | PP_LOG_HTTP_FORMAT       | `short`                     | What to include in Http logs. [See here](https://github.com/expressjs/morgan#predefined-formats) for available formats and customization. |
+| PP_LOG_TRANSPORT_CONSOLE | `true`                      | Whether to write logs to standard output.                                                                                                 |
+| PP_LOG_TRANSPORT_FILE    | `false`                     | Whether to store logs in rotated files. Location is in storage.                                                                           |
 
 Default configuration and available environment variables can be found in the [backend/config directory](https://github.com/axelrindle/planningpoker/tree/main/packages/backend/config).
 
