@@ -1,6 +1,6 @@
 import { faCheck, faClose, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 import Header from '../components/layout/Header'
@@ -9,6 +9,14 @@ import { useCards } from '../query/card'
 import { useRoom } from '../query/room'
 import { useSocketUrl } from '../query/socket'
 import { useSelector } from '../store'
+
+const Status = {
+    [ReadyState.CONNECTING]: 'Connecting',
+    [ReadyState.OPEN]: 'Open',
+    [ReadyState.CLOSING]: 'Closing',
+    [ReadyState.CLOSED]: 'Closed',
+    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
+}
 
 export default function PageRoom() {
     const navigate = useNavigate()
@@ -29,13 +37,10 @@ export default function PageRoom() {
         {},
         room !== undefined && (!room.private || password !== '') && !socketUrl.isError
     )
-    const connectionStatus = {
-        [ReadyState.CONNECTING]: 'Connecting',
-        [ReadyState.OPEN]: 'Open',
-        [ReadyState.CLOSING]: 'Closing',
-        [ReadyState.CLOSED]: 'Closed',
-        [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-    }[readyState]
+    const connectionStatus = useMemo(
+        () => Status[readyState],
+        [readyState]
+    )
 
     const [userId, setUserId] = useState<string>('')
     const [users, setUsers] = useState<any[]>([])
@@ -46,7 +51,7 @@ export default function PageRoom() {
 
     const [selectedCard, setCard] = useState('')
 
-    function select(card: any) {
+    const select = useCallback(function (card: any) {
         setCard(card.id)
         sendMessage(JSON.stringify({
             userId,
@@ -55,13 +60,13 @@ export default function PageRoom() {
                 cardId: card.value
             }
         }))
-    }
-    function deselect() {
+    }, [sendMessage, userId])
+    const deselect = useCallback(function () {
         select({
             id: -1,
             value: undefined
         })
-    }
+    }, [select])
 
     useEffect(() => {
         if (!room) return

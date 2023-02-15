@@ -1,5 +1,5 @@
 import { UseMutationResult } from '@tanstack/react-query'
-import { createContext, ReactNode, useContext, useEffect } from 'react'
+import { createContext, ReactNode, useContext, useEffect, useMemo } from 'react'
 import { useDispatch } from '../../store'
 import { clearFormData, FormData, setFormData } from '../../store/slices/formData'
 import { FormError } from '../../util/error'
@@ -24,10 +24,13 @@ export function useForm() {
 }
 
 export default function Form(props: Props) {
-    const context: FormContextData = {
-        key: props.name,
-        mutation: props.mutation,
-    }
+    const context: FormContextData = useMemo(
+        () => ({
+            key: props.name,
+            mutation: props.mutation
+        }),
+        [props.mutation, props.name]
+    )
 
     const dispatch = useDispatch()
 

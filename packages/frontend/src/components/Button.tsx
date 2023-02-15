@@ -1,6 +1,6 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { MouseEventHandler } from 'react'
+import { MouseEventHandler, useMemo } from 'react'
 
 interface Props {
     label?: string | (() => string)
@@ -11,7 +11,13 @@ interface Props {
 }
 
 export default function Button(props: Props) {
-    const label = typeof props.label === 'function' ? props.label() : props.label
+    const { label } = props
+
+    const theLabel = useMemo(
+        () => typeof label === 'function' ? label() : label,
+        [label]
+    )
+
     return (
         <button
             className="
@@ -30,13 +36,13 @@ export default function Button(props: Props) {
                     props.onClick?.(event)
                 }
             }}
-            title={label}
+            title={theLabel}
             disabled={props.disabled}
         >
             {props.icon && <FontAwesomeIcon icon={props.icon} />}
             {!props.hideLabel && props.label && (
                 <span className="ml-2">
-                    {label}
+                    {theLabel}
                 </span>
             )}
         </button>

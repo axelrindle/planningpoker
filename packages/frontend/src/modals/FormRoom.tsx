@@ -1,5 +1,6 @@
 import { faCheck, faClose, faSave } from '@fortawesome/free-solid-svg-icons'
 import { useMutation, UseMutationResult, useQueryClient } from '@tanstack/react-query'
+import { useMemo } from 'react'
 import Form from '../components/form/Form'
 import Input from '../components/form/Input'
 import InputPassword from '../components/form/InputPassword'
@@ -34,6 +35,12 @@ export default function ModalFormRoom(props: Props) {
             props.close()
         }
     })
+
+    const userLimit = useMemo(() => props.room?.userLimit, [props.room?.userLimit])
+    const isLimitDisabled = useMemo(
+        () => isCreate ? true : !userLimit,
+        [isCreate, userLimit]
+    )
 
     return (
         <Modal
@@ -73,7 +80,7 @@ export default function ModalFormRoom(props: Props) {
                     label="Limit"
                     help="userLimit the user count of a Room. Use the checkbox on the right to disable."
                     min={2}
-                    disabled={isCreate ? true : !props.room?.userLimit}
+                    disabled={isLimitDisabled}
                 />
 
                 <Input

@@ -1,4 +1,4 @@
-import { ChangeEventHandler, HTMLInputTypeAttribute, ReactNode, useCallback, useEffect, useState } from 'react'
+import { ChangeEventHandler, HTMLInputTypeAttribute, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from '../../store'
 import { mergeFormData } from '../../store/slices/formData'
 import { getError } from '../../util/error'
@@ -52,7 +52,10 @@ export default function Input(props: Props) {
 
     const dispatch = useDispatch()
     const initialValue = useInitialValue(formDataKey, props)
-    const error = context?.mutation ? getError(context.mutation, props.name) : props.error
+    const error = useMemo(
+        () => context?.mutation ? getError(context.mutation, props.name) : props.error,
+        [context.mutation, props.error, props.name]
+    )
 
     const [value, setValue] = useState(initialValue)
 
