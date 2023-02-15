@@ -5,7 +5,7 @@ import useEventListener from '@use-it/event-listener'
 import { ReactNode, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Button from '../components/Button'
-import Content from './Content';
+import Content from './layout/Content';
 
 const container = document.getElementById('modals') as HTMLElement
 
