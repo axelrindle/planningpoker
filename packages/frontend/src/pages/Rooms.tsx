@@ -1,7 +1,6 @@
 import { faLock } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useCallback, useState } from 'react'
-import { ShowContextMenuParams } from 'react-contexify'
 import { Link } from 'react-router-dom'
 import EntityListPage, { ModalFunction } from '../components/common/EntityListPage'
 import ModalDeleteRoom from '../modals/DeleteRoom'
