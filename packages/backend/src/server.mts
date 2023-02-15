@@ -29,8 +29,8 @@ const handleError: ErrorRequestHandler = (err, _req, res, _next) => {
 
 async function listen(host: string, port: number, server: Server): Promise<void> {
     return new Promise((resolve, reject) => {
-        server.once('listening', () => resolve())
-        server.once('error', () => reject())
+        server.once('listening', resolve)
+        server.once('error', reject)
         server.listen(port, host)
     })
 }

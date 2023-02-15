@@ -1,5 +1,6 @@
 import { createTerminus } from '@godaddy/terminus'
 import { readFile } from 'fs/promises'
+import PrettyError from 'pretty-error'
 import startContainer from './container.mjs'
 import { makeLogger } from './logger.mjs'
 import { startServer } from './server.mjs'
@@ -10,8 +11,14 @@ if (! process.env['DISABLE_BANNER']) {
     process.stderr.write(banner)
 }
 
+const prettyError = new PrettyError()
 const logger = makeLogger('main')
 logger.info('Initializing...')
+
+process.once('uncaughtException', err => {
+    logger.error('Fatal error during initialization!\n\n' + prettyError.render(err))
+    process.exit(1)
+})
 
 const container = await startContainer()
 const [http, websocket] = await startServer(container)
