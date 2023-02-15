@@ -39,6 +39,7 @@ The backend may send the following events:
 | ------ | ----------------------------------------------------------------------------- |
 | HELLO  | Sent once a connection has been established and assigns the user a unique ID. |
 | UPDATE | Delivers the current game state when it changes.                              |
+| RENAME | A user has changed his name. Structurally identical to UPDATE events.         |
 | DELETE | A room has been deleted.                                                      |
 
 #### Examples
