@@ -1,0 +1,13 @@
+{
+    "recommendations": [
+        "editorconfig.editorconfig",
+        "dbaeumer.vscode-eslint",
+        "moalamri.inline-fold",
+        "christian-kohler.path-intellisense",
+        "bradlc.vscode-tailwindcss",
+        "spmeesseman.vscode-taskexplorer",
+        "ms-azuretools.vscode-docker",
+        "mikestead.dotenv",
+        "eamodio.gitlens"
+    ]
+}
