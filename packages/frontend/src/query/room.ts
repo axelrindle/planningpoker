@@ -1,7 +1,6 @@
 import { MutationFunction, useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { useSelector } from '../store';
-import { FormData } from '../store/slices/formData'
-import { FormError } from '../util/error'
+import { FormData, FormError } from '../types'
 
 export function useRooms() {
     const apiUrl = useSelector(state => state.config.apiUrl)

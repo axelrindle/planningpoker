@@ -1,17 +1,14 @@
 import { faCheck, faClose, faSave } from '@fortawesome/free-solid-svg-icons'
 import { useMutation, UseMutationResult, useQueryClient } from '@tanstack/react-query'
 import { useMemo } from 'react'
-import Form from '../components/form/Form'
+import Form, { useFormRef } from '../components/form/Form'
 import Input from '../components/form/Input'
 import InputPassword from '../components/form/InputPassword'
 import InputToggleable from '../components/form/InputToggleable'
 import Modal, { ChildProps } from '../components/Modal'
 import { createRoom, updateRoom } from '../query/room'
 import { useSelector } from '../store'
-import { FormData } from '../store/slices/formData'
-import { FormError } from '../util/error'
-
-const FORMDATA_KEY = 'form_room'
+import { FormData, FormError } from '../types'
 
 type Mode = 'create' | 'edit'
 interface Props extends ChildProps {
@@ -22,9 +19,7 @@ interface Props extends ChildProps {
 export default function ModalFormRoom(props: Props) {
     const isCreate = props.mode === 'create'
 
-    const formData = useSelector(state => state.formData[FORMDATA_KEY])
     const apiUrl = useSelector(state => state.config.apiUrl)
-
     const queryClient = useQueryClient()
     const mutation: UseMutationResult<Response, FormError, FormData> = useMutation({
         mutationFn: isCreate ? createRoom(apiUrl) : updateRoom(apiUrl, props.room?.id),
@@ -42,6 +37,8 @@ export default function ModalFormRoom(props: Props) {
         [isCreate, userLimit]
     )
 
+    const form = useFormRef()
+
     return (
         <Modal
             isOpen={props.isOpen}
@@ -58,14 +55,14 @@ export default function ModalFormRoom(props: Props) {
                 {
                     label: isCreate ? 'Create' : 'Save',
                     icon: isCreate ? faCheck : faSave,
-                    handle: () => mutation.mutate(formData),
+                    handle: () => form.current?.submit(),
                 },
             ]}
         >
             <Form
-                name={FORMDATA_KEY}
                 mutation={mutation}
                 preFill={isCreate ? undefined : props.room}
+                formRef={form}
             >
                 <Input
                     type="text"

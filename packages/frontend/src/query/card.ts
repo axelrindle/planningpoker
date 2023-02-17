@@ -1,7 +1,6 @@
 import { MutationFunction, useQuery } from '@tanstack/react-query'
 import { useSelector } from '../store/index'
-import { FormData } from '../store/slices/formData'
-import { FormError } from '../util/error'
+import { FormData, FormError } from '../types'
 
 export function useCards() {
     const apiUrl = useSelector(state => state.config.apiUrl)

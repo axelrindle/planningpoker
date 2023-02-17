@@ -8,7 +8,7 @@ import ModalFormRoom from '../modals/FormRoom'
 import { useRooms } from '../query/room'
 
 export default function PageRooms() {
-    const [roomId, setRoomId] = useState(0)
+    const [room, setRoom] = useState<any|null>(null)
 
     const getModal: ModalFunction = useCallback(({
         openModal, setOpenModal, query
@@ -23,15 +23,15 @@ export default function PageRooms() {
                 isOpen={openModal === 'edit' && query.isFetched}
                 close={() => setOpenModal(null)}
                 mode="edit"
-                room={query.data}
+                room={room}
             />
             <ModalDeleteRoom
                 isOpen={openModal === 'delete'}
                 close={() => setOpenModal(null)}
-                roomId={roomId}
+                roomId={room?.id}
             />
         </>
-    ), [roomId])
+    ), [room])
 
     return (
         <EntityListPage
@@ -49,7 +49,7 @@ export default function PageRooms() {
                             to={`/room/${room.id}`}
                             className="bg-primary text-white px-8 py-4 rounded"
                             onContextMenu={event => {
-                                setRoomId(room.id)
+                                setRoom(room)
                                 contextMenu.show({
                                     id: contextMenu.id,
                                     event

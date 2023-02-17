@@ -1,8 +1,6 @@
-import { ChangeEventHandler, HTMLInputTypeAttribute, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from '../../store'
-import { mergeFormData } from '../../store/slices/formData'
-import { getError } from '../../util/error'
-import { useForm } from './Form'
+import { ChangeEventHandler, HTMLInputTypeAttribute, ReactNode, useMemo } from 'react'
+import { FormData } from '../../types'
+import { useFormikContext } from './Form'
 
 export interface Props {
     type: HTMLInputTypeAttribute
@@ -20,66 +18,12 @@ export interface Props {
     disabled?: boolean
 }
 
-export function useFormDataKey(): string {
-    const context = useForm()
-    return context?.key ?? 'DUMMY'
-}
-
-function useInitialValue(root: string, props: Props) {
-    const defaultValue =  props.defaultValue || ''
-    const data = useSelector(state => state.formData[root])
-    if (!data) {
-        return defaultValue
-    }
-
-    return data[props.name] || defaultValue
-}
-
-function transformValue(value: any) {
-    switch (typeof value) {
-        case 'undefined':
-            return undefined
-        case 'number':
-            return value ? value : 0
-        default:
-            return value ? value : null
-    }
-}
-
 export default function Input(props: Props) {
-    const context = useForm()
-    const formDataKey = useFormDataKey()
-
-    const dispatch = useDispatch()
-    const initialValue = useInitialValue(formDataKey, props)
+    const context = useFormikContext<FormData>()
     const error = useMemo(
-        () => context?.mutation ? getError(context.mutation, props.name) : props.error,
-        [context.mutation, props.error, props.name]
+        () => context ? context.errors[props.name] as string : props.error,
+        [context, props.error, props.name]
     )
-
-    const [value, setValue] = useState(initialValue)
-
-    const persist = useCallback<(value: any) => void>(value => {
-        dispatch(mergeFormData({
-            key: formDataKey,
-            value: {
-                [props.name]: transformValue(value)
-            }
-        }))
-    }, [dispatch, formDataKey, props.name])
-
-    useEffect(() => {
-        persist(value)
-    }, [persist, value])
-
-    useEffect(() => {
-        if (props.disabled) {
-            setValue('')
-        }
-        else {
-            setValue(initialValue)
-        }
-    }, [initialValue, props.disabled])
 
     return (
         <div className={`flex flex-col gap-1 ${props.containerClassName ?? ''}`}>
@@ -97,16 +41,10 @@ export default function Input(props: Props) {
                         disabled:cursor-not-allowed
                     "
                     placeholder={props.placeholder}
-                    onChange={e => {
-                        if (props.onChange !== undefined) {
-                            props.onChange(e)
-                        }
-                        else {
-                            setValue(e.target.value)
-                        }
-                    }}
-                    value={props.onChange ? undefined : value}
-                    defaultValue={props.onChange ? props.defaultValue : undefined}
+                    value={context ? (context.values[props.name] ?? '') : undefined}
+                    defaultValue={context ? undefined : props.defaultValue}
+                    onChange={context ? context.handleChange : props.onChange}
+                    onBlur={context ? context.handleBlur : undefined}
                     min={props.min}
                     max={props.max}
                     disabled={props.disabled}

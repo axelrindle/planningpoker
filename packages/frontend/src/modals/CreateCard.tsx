@@ -4,15 +4,12 @@ import { ChangeEvent, useCallback, useMemo, useState } from 'react'
 import { Stepper } from 'react-form-stepper'
 import { StepDTO } from 'react-form-stepper/dist/components/Step/StepTypes.js'
 import { useTus } from 'use-tus'
-import Form from '../components/form/Form'
+import Form, { useFormRef } from '../components/form/Form'
 import Input from '../components/form/Input'
 import Modal, { ChildProps } from '../components/Modal'
 import { createCard, updateCard } from '../query/card'
-import { useDispatch, useSelector } from '../store'
-import { clearFormData, FormData } from '../store/slices/formData'
-import { FormError, getError } from '../util/error'
-
-const FORMDATA_KEY = 'card_create'
+import { useSelector } from '../store'
+import { FormData, FormError } from '../types'
 
 const steps: StepDTO[] = [
     {
@@ -29,9 +26,7 @@ const steps: StepDTO[] = [
 interface Props extends ChildProps {}
 
 export default function ModalCreateCard(props: Props) {
-    const formData = useSelector(state => state.formData[FORMDATA_KEY])
     const apiUrl = useSelector(state => state.config.apiUrl)
-    const dispatch = useDispatch()
     const queryClient = useQueryClient()
     const [cardId, setCardId] = useState(-1)
     const mutationCreate = useMutation<Response, FormError, FormData>({
@@ -40,7 +35,6 @@ export default function ModalCreateCard(props: Props) {
             const body = await res.json()
             setCardId(body.id)
             setActiveStep(activeStep + 1)
-            dispatch(clearFormData(FORMDATA_KEY))
         }
     })
     const mutationUpdate = useMutation<Response, FormError, FormData>({
@@ -58,6 +52,8 @@ export default function ModalCreateCard(props: Props) {
     const { upload, setUpload, error } = useTus()
     const [hasFile, setHasFile] = useState(false)
     const [progress, setProgress] = useState(0)
+
+    const formCreate = useFormRef()
 
     const handleSetUpload = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files
@@ -139,7 +135,7 @@ export default function ModalCreateCard(props: Props) {
                     handle: () => {
                         switch (activeStep) {
                             case 0:
-                                mutationCreate.mutate(formData)
+                                formCreate.current?.submit()
                                 break
                             case 1:
                                 handleStart()
@@ -168,8 +164,8 @@ export default function ModalCreateCard(props: Props) {
 
             {activeStep === 0 && (
                 <Form
-                    name={FORMDATA_KEY}
                     mutation={mutationCreate}
+                    formRef={formCreate}
                 >
                     <Input
                         type="text"
@@ -177,7 +173,6 @@ export default function ModalCreateCard(props: Props) {
                         label="Name"
                         placeholder="Card No. 5"
                         help="A unique name for this card. Use the value for simplicity or something special."
-                        error={getError(mutationCreate, 'name')}
                     />
 
                     <Input
@@ -185,7 +180,6 @@ export default function ModalCreateCard(props: Props) {
                         name="value"
                         label="Card Value"
                         help="The numeric value of this card. Must be positive."
-                        error={getError(mutationCreate, 'value')}
                         min={2}
                     />
                 </Form>
