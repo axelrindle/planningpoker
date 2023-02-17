@@ -1,0 +1,63 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
+{
+	"name": "PlanningPoker Dev Container",
+
+	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+	"image": "mcr.microsoft.com/devcontainers/typescript-node:0-18",
+
+    // Features to add to the dev container. More info: https://containers.dev/features.
+	"features": {
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+			"moby": true,
+			"version": "latest",
+			"dockerDashComposeVersion": "v2"
+		},
+		"ghcr.io/devcontainers/features/git:1": {
+			"ppa": true,
+			"version": "os-provided"
+		},
+		"ghcr.io/devcontainers/features/github-cli:1": {
+			"installDirectlyFromGitHubRelease": true,
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers-contrib/features/curl-apt-get:1": {},
+		"ghcr.io/devcontainers-contrib/features/lerna-npm:1": {
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers-contrib/features/wget-apt-get:1": {},
+		"ghcr.io/eitsupi/devcontainer-features/jq-likes:1": {
+			"jqVersion": "os-provided",
+			"yqVersion": "latest",
+			"gojqVersion": "latest"
+		},
+		"ghcr.io/dhoeric/features/act:1": {},
+		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
+		"ghcr.io/warrenbuckley/codespace-features/sqlite:1": {}
+	},
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [
+        3000, 3001, 3002
+    ],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "npm i",
+
+    // Configure tool-specific properties.
+	"customizations": {
+		"vscode": {
+			"extensions": [
+                "editorconfig.editorconfig",
+                "dbaeumer.vscode-eslint",
+                "moalamri.inline-fold",
+                "christian-kohler.path-intellisense",
+                "bradlc.vscode-tailwindcss",
+                "spmeesseman.vscode-taskexplorer"
+			]
+		}
+	}
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
+}
