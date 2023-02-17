@@ -28,7 +28,11 @@ export const validateRoomCreation = checkSchema({
     },
     description: {
         isString: true,
-        optional: true,
+        optional: {
+            options: {
+                nullable: true
+            }
+        },
     },
     userLimit: {
         isInt: {
@@ -83,11 +87,6 @@ export const validateRoomUpdate = checkSchema({
     },
     description: {
         isString: true,
-        notEmpty: {
-            options: {
-                ignore_whitespace: true
-            }
-        },
         optional: {
             options: {
                 nullable: true
