@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 import EntityListPage, { ModalFunction } from '../components/common/EntityListPage'
 import ModalCreateCard from '../modals/CreateCard'
 import ModalDeleteCard from '../modals/DeleteCard'
+import ModalEditCard from '../modals/EditCard'
 import { useCards } from '../query/card'
 import { useSelector } from '../store'
 
@@ -17,7 +18,11 @@ export default function PageCards() {
                 isOpen={openModal === 'create'}
                 close={() => setOpenModal(null)}
             />
-
+            <ModalEditCard
+                isOpen={openModal === 'edit'}
+                close={() => setOpenModal(null)}
+                card={card}
+            />
             <ModalDeleteCard
                 isOpen={openModal === 'delete'}
                 close={() => setOpenModal(null)}

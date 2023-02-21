@@ -4,7 +4,7 @@ import { ChangeEvent, useCallback, useMemo, useState } from 'react'
 import { Stepper } from 'react-form-stepper'
 import { StepDTO } from 'react-form-stepper/dist/components/Step/StepTypes.js'
 import { useTus } from 'use-tus'
-import Form, { useFormRef } from '../components/form/Form'
+import Form, { FormProps, useFormRef } from '../components/form/Form'
 import Input from '../components/form/Input'
 import Modal, { ChildProps } from '../components/Modal'
 import { createCard, updateCard } from '../query/card'
@@ -24,6 +24,28 @@ const steps: StepDTO[] = [
 ]
 
 interface Props extends ChildProps {}
+
+export function FormCard(props: FormProps) {
+    return (
+        <Form {...props}>
+            <Input
+                type="text"
+                name="name"
+                label="Name"
+                placeholder="Card No. 5"
+                help="A unique name for this card. Use the value for simplicity or something special."
+            />
+
+            <Input
+                type="number"
+                name="value"
+                label="Card Value"
+                help="The numeric value of this card. Must be positive."
+                min={2}
+            />
+        </Form>
+    )
+}
 
 export default function ModalCreateCard(props: Props) {
     const apiUrl = useSelector(state => state.config.apiUrl)
@@ -163,26 +185,10 @@ export default function ModalCreateCard(props: Props) {
             />
 
             {activeStep === 0 && (
-                <Form
+                <FormCard
                     mutation={mutationCreate}
                     formRef={formCreate}
-                >
-                    <Input
-                        type="text"
-                        name="name"
-                        label="Name"
-                        placeholder="Card No. 5"
-                        help="A unique name for this card. Use the value for simplicity or something special."
-                    />
-
-                    <Input
-                        type="number"
-                        name="value"
-                        label="Card Value"
-                        help="The numeric value of this card. Must be positive."
-                        min={2}
-                    />
-                </Form>
+                />
             )}
 
             {activeStep === 1 && (

@@ -9,7 +9,7 @@ import Content from './layout/Content';
 
 const container = document.getElementById('modals') as HTMLElement
 
-interface Action {
+export interface Action {
     label: string | (() => string)
     handle: () => void
     icon: IconProp

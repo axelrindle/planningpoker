@@ -8,7 +8,7 @@ export interface FormContext {
     reset: () => void
 }
 
-interface Props {
+export interface FormProps {
     preFill?: any
     mutation: UseMutationResult<Response, FormError, FormData>
     children?: ReactNode
@@ -23,7 +23,7 @@ export function useFormRef() {
     return useRef<FormContext>(null) as MutableRefObject<FormContext>
 }
 
-export default function Form(props: Props) {
+export default function Form(props: FormProps) {
     const formik = useRef<FormikProps<any>>(null)
 
     useEffect(() => {
