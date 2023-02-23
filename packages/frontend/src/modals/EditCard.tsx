@@ -1,5 +1,5 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faBookAtlas, faClose, faImage, faSave, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faBookAtlas, faClose, faImage, faSave } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
@@ -148,7 +148,7 @@ export default function ModalEditCard(props: Props) {
                 )}
                 {openTab !== 'image' ? null : (
                     <div className="flex flex-col gap-8 items-center">
-                        <img src={construction} className="w-96" />
+                        <img src={construction} className="w-96" alt="Under Construction" />
                         <p className="font-medium">
                             This feature is under construction.
                         </p>
