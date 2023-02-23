@@ -41,7 +41,7 @@ export function FormCard(props: FormProps) {
                 name="value"
                 label="Card Value"
                 help="The numeric value of this card. Must be positive."
-                min={2}
+                min={0}
             />
         </Form>
     )
