@@ -1,0 +1,65 @@
+import { faCheck, faHome, faPencil, faPlus, faSave, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Button from '@site/src/components/Button'
+
+# Room Management
+
+Rooms can be created, edited and deleted.
+
+## Creation
+
+### Open the Form
+
+![create step 01](@site/static/screenshots/01-create-room/01.png)
+
+> Navigate to the room list ( <FontAwesomeIcon icon={faHome} /> ) and click on the <Button label="Add" icon={faPlus} /> button.
+
+### Fill out the details
+
+![create step 02](@site/static/screenshots/01-create-room/02.png)
+
+Fill out the form details and click on the <Button label="Create" icon={faCheck} /> button.
+
+Fields that have a checkbox next to it may be enabled or disabled. Disabled fields will be
+considered **empty** and thus the value will be removed from the Room if valid.
+
+:::caution
+While a Room may be locked with a password, there is currently
+[no way to authenticate a WebSocket connection](https://github.com/whatwg/websockets/issues/16).
+A fix for this will hopefully be available in the future.
+:::
+
+### Confirm the creation
+
+![create step 03](@site/static/screenshots/01-create-room/03.png)
+
+Attempting to create the new Room might fail. Error messages will be shown below the corresponding
+field. A general error message (e.g. network failure) will be displayed on the bottom of the modal.
+
+### Et vóila!
+
+![create step 04](@site/static/screenshots/01-create-room/04.png)
+
+The new Room will appear immediately in the Room list.
+
+## Editing
+
+![edit context menu](@site/static/screenshots/context-room.png)
+
+To edit a Room, right-click it and select <FontAwesomeIcon icon={faPencil} /> **Edit**.
+
+A form very similar to the one from the Room creation will appear with pre-filled fields. Make
+your desired changes and click on the <Button label="Save" icon={faSave} /> button afterwards.
+
+## Deleting
+
+To delete a Room, right-click it and select <FontAwesomeIcon icon={faTrash} /> **Delete**.
+
+A modal will appear requesting the confirmation to delete the selected Room.
+
+Confirm by clicking on <Button label="Delete" icon={faTrash} />.
+
+:::caution
+A deleted Room can not be restored. In case an estimation is currently taking place,
+all connected users will be kicked out of the Room.
+:::
