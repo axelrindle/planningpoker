@@ -33,7 +33,11 @@ export const validateCardUpdate = checkSchema({
         optional: true,
     },
     value: {
-        isInt: true,
+        isInt: {
+            options: {
+                min: 0
+            }
+        },
         toInt: true,
         optional: true,
     },
